@@ -17,7 +17,7 @@
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",Inter,Arial,Helvetica,sans-serif}
 button,a{font:inherit;-webkit-tap-highlight-color:transparent} button{touch-action:manipulation}
-.page{max-width:1550px;margin:0 auto;padding:20px 22px 44px}
+.page{max-width:1550px;margin:0 auto;padding:20px 22px 44px}.back-link{display:inline-flex;align-items:center;min-height:38px;margin:0 0 8px 2px;color:var(--navy);text-decoration:none;font-size:13px;font-weight:800}
 .hero{background:linear-gradient(125deg,var(--navy),var(--navy2));color:#fff;border-radius:22px;padding:24px 26px;box-shadow:var(--shadow);position:relative;overflow:hidden}
 .hero:after{content:"";position:absolute;width:340px;height:340px;border-radius:50%;right:-120px;top:-160px;background:rgba(255,255,255,.06)}
 .topline{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;position:relative;z-index:1}
@@ -93,7 +93,7 @@ dialog{border:0;border-radius:18px;padding:0;width:min(720px,calc(100% - 28px));
 .metric-help{background:#F8FAFC;border:1px solid #E0E8EE;border-radius:13px;padding:12px;font-size:11px;color:#536675;line-height:1.55}
 .metric-help b{color:var(--navy)}
 @media(max-width:1100px){.benchmark-layout{grid-template-columns:1fr}.benchmark-kpis{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:700px){.benchmark-kpis{grid-template-columns:1fr 1fr}.benchmark-kpi .bv{font-size:18px}}
+@media(max-width:700px){.back-link{margin-left:0;margin-bottom:6px}.benchmark-kpis{grid-template-columns:1fr 1fr}.benchmark-kpi .bv{font-size:18px}}
 
 @media(max-width:1000px){.hero-summary,.grid4{grid-template-columns:repeat(2,1fr)}.grid3{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}.stat-strip{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:620px){.page{padding:12px 10px 30px}.hero{padding:19px 16px}h1{font-size:27px}.topline{display:block}.hero-actions{margin-top:12px}.hero-summary,.grid4{grid-template-columns:1fr 1fr}.stat-strip{grid-template-columns:1fr 1fr}.chart{height:235px}}
@@ -164,6 +164,7 @@ dialog{border:0;border-radius:18px;padding:0;width:min(720px,calc(100% - 28px));
 </head>
 <body>
 <div class="page">
+  <a class="back-link" href="../">← Mark Dashboard</a>
   <section class="hero">
     <div class="topline">
       <div>
