@@ -17,7 +17,7 @@ body{margin:0;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,
 .eyebrow{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);margin-bottom:8px}
 h1{margin:0;color:var(--navy);font-size:clamp(30px,8vw,48px);line-height:1.02;letter-spacing:-.03em}
 .sub{margin:10px 0 24px;color:var(--muted);font-size:15px;line-height:1.45}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
 .tile{display:block;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:22px;min-height:180px;position:relative;overflow:hidden}
 .tile:active{transform:scale(.99)}
 .icon{font-size:30px;margin-bottom:24px}
@@ -26,7 +26,7 @@ h1{margin:0;color:var(--navy);font-size:clamp(30px,8vw,48px);line-height:1.02;le
 .go{position:absolute;right:20px;bottom:18px;color:var(--blue);font-weight:800;font-size:20px}
 .badge{display:inline-block;margin-top:13px;padding:5px 8px;border-radius:999px;background:#E9F3FA;color:#0B5F94;font-size:11px;font-weight:800}
 .footer{margin-top:20px;color:var(--muted);font-size:12px}
-@media(max-width:640px){.wrap{padding-left:14px;padding-right:14px}.grid{grid-template-columns:1fr;gap:12px}.tile{min-height:150px;padding:19px}.icon{margin-bottom:16px}.tile h2{font-size:21px}}
+@media(max-width:900px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:640px){.wrap{padding-left:14px;padding-right:14px}.grid{grid-template-columns:1fr;gap:12px}.tile{min-height:150px;padding:19px}.icon{margin-bottom:16px}.tile h2{font-size:21px}}
 </style>
 </head>
 <body>
@@ -46,7 +46,14 @@ h1{margin:0;color:var(--navy);font-size:clamp(30px,8vw,48px);line-height:1.02;le
       <div class="icon">▦</div>
       <h2>Family Calendar</h2>
       <p>Travel, key meetings, family events and reminders.</p>
-      <span class="badge">Setup ready</span>
+      <span class="badge">Live</span>
+      <span class="go">→</span>
+    </a>
+    <a class="tile" href="./emma/">
+      <div class="icon">A+</div>
+      <h2>Emma · Grade 9</h2>
+      <p>2026 report trends, subject averages, teacher themes and Term 4 target planning.</p>
+      <span class="badge">Live</span>
       <span class="go">→</span>
     </a>
   </section>
