@@ -2,21 +2,190 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0B2B4A">
-<title>Family Calendar</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Daly Family – Travel and Key Events</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#F4F8FB;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:#17202A}
-.wrap{max-width:720px;margin:0 auto;padding:max(26px,env(safe-area-inset-top)) 18px}
-a{color:#0B72B9;text-decoration:none;font-weight:800}.card{margin-top:24px;background:white;border:1px solid #D7E0E7;border-radius:18px;padding:22px}
-h1{margin:10px 0 8px;color:#0B2B4A;font-size:32px}.muted{color:#6D7782;line-height:1.5}
+:root{--navy:#0B2B4A;--text:#17202A;--muted:#6D7782;--grid:#D7E0E7;--bg:#F4F8FB;--today:#0B95E5}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:Arial,Helvetica,sans-serif;color:var(--text)}
+.page{max-width:1900px;margin:0 auto;padding:22px 20px 28px}
+.top{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap}
+h1{font-family:Georgia,serif;color:var(--navy);font-size:34px;margin:0}.sub{color:var(--muted);margin-top:5px;font-size:15px}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+button{font:inherit;cursor:pointer;border:1px solid #CBD6DF;background:#fff;color:var(--navy);border-radius:10px;padding:9px 12px;font-weight:700;min-height:40px}
+button:hover{background:#F2F6F9}button:focus-visible{outline:3px solid #8CCAF4;outline-offset:2px}
+.legend,.filters{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.pill{display:inline-flex;align-items:center;gap:7px;border:1px solid #D5DEE5;background:white;border-radius:999px;padding:7px 10px;font-size:12px}.swatch{width:12px;height:12px;border-radius:4px}.filters button{font-size:12px;padding:7px 10px;border-radius:999px}.filters button.active{background:var(--navy);color:white;border-color:var(--navy)}
+.calendar-shell{overflow-x:auto;padding-bottom:8px;margin-top:16px}.months{display:grid;grid-template-columns:repeat(4,minmax(330px,1fr));gap:12px;min-width:1380px}.card{background:#fff;border:1px solid #CDD8E0;border-radius:16px;overflow:hidden}
+.mhead{padding:14px 16px;background:#EFF5F9;color:var(--navy)}
+.month-open{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;width:100%;padding:0;border:0;background:transparent;text-align:left;min-height:0;border-radius:0}.month-open:hover{background:transparent}.month-open:focus-visible{outline:3px solid #8CCAF4;outline-offset:4px;border-radius:8px}
+.mtitle{font-size:20px;font-weight:800}.quote{font-size:12px;font-style:italic;text-align:right;color:#40566A;max-width:145px}.zoom-hint{font-size:10px;color:#6D7782;font-weight:600;margin-top:3px}
+.grid{display:grid;grid-template-columns:repeat(7,1fr)}.dow{height:32px;padding-top:8px;text-align:center;background:#F7F9FB;font-size:11px;font-weight:800;color:var(--navy);border-right:1px solid var(--grid);border-bottom:1px solid var(--grid)}
+.day{height:76px;padding:5px;position:relative;border-right:1px solid var(--grid);border-bottom:1px solid var(--grid);overflow:hidden}.day.other{background:#FAFBFC;color:#A9B2BB}.day.trt-day{background:repeating-linear-gradient(135deg,rgba(11,149,229,.16) 0 8px,rgba(11,149,229,.05) 8px 16px);box-shadow:inset 4px 0 0 #0B95E5}.trt-tag{position:absolute;top:5px;right:5px;font-size:9px;font-weight:900;letter-spacing:.25px;color:#075E91;background:#D7F0FD;border:1px solid #68BFEF;border-radius:999px;padding:2px 5px;line-height:1.1;z-index:2}.num{font-size:12px;font-weight:800;display:inline-block;padding:2px 5px;border-radius:6px}.num.today{outline:3px solid var(--today);background:#E8F5FE;color:#064F82}
+.ev{height:15px;line-height:15px;border-radius:8px;margin-top:4px;padding:0 5px;color:white;font-size:9px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;width:100%;border:0;text-align:left;min-height:15px}
+.summary{padding:10px 12px 14px}.summary h3{margin:0 0 7px;color:var(--navy);font-size:14px}.item{display:flex;gap:7px;align-items:flex-start;padding:4px 0;font-size:11px;font-weight:800;background:transparent;border:0;width:100%;text-align:left;min-height:0}.dot{width:8px;height:18px;border-radius:3px;flex:0 0 auto}.empty{color:var(--muted);font-size:11px;padding:4px 0}.status{margin-top:10px;color:var(--muted);font-size:12px}
+dialog{border:0;border-radius:16px;padding:0;box-shadow:0 18px 55px rgba(11,43,74,.25)}dialog::backdrop{background:rgba(11,43,74,.48)}
+#eventDialog{max-width:420px;width:calc(100% - 28px)}.modal{padding:20px}.modal h2{margin:0 0 8px;color:var(--navy);font-size:22px}.modal-cat{display:inline-flex;align-items:center;gap:7px;margin:8px 0 14px;font-weight:700}.modal-row{margin:7px 0;color:#314252}.modal-actions{display:flex;justify-content:flex-end;margin-top:16px}
+#monthDialog{width:min(1180px,calc(100% - 28px));max-width:1180px;max-height:92vh}.month-modal{padding:20px}.month-modal-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px}.month-modal-title{color:var(--navy);font-size:28px;font-weight:800;margin:0}.month-modal-sub{color:var(--muted);font-size:13px;margin-top:3px}.month-close{flex:0 0 auto}.month-scroll{overflow:auto}.zoom-grid{display:grid;grid-template-columns:repeat(7,1fr);border-left:1px solid var(--grid);border-top:1px solid var(--grid)}.zdow{padding:10px;text-align:center;background:#F7F9FB;font-size:13px;font-weight:800;color:var(--navy);border-right:1px solid var(--grid);border-bottom:1px solid var(--grid)}.zday{min-height:112px;padding:8px;position:relative;border-right:1px solid var(--grid);border-bottom:1px solid var(--grid);overflow:hidden}.zday.other{background:#FAFBFC;color:#A9B2BB}.zday.trt-day{background:repeating-linear-gradient(135deg,rgba(11,149,229,.16) 0 10px,rgba(11,149,229,.05) 10px 20px);box-shadow:inset 5px 0 0 #0B95E5}.ztrt-tag{position:absolute;top:7px;right:7px;font-size:11px;font-weight:900;color:#075E91;background:#D7F0FD;border:1px solid #68BFEF;border-radius:999px;padding:3px 7px;line-height:1.1;z-index:2}.znum{font-size:14px;font-weight:800;display:inline-block;padding:2px 6px;border-radius:6px}.znum.today{outline:3px solid var(--today);background:#E8F5FE;color:#064F82}.zev{display:block;width:100%;border:0;border-radius:8px;margin-top:6px;padding:5px 7px;color:#fff;font-size:12px;font-weight:800;text-align:left;line-height:1.2;min-height:28px}.zoom-summary{margin-top:16px}.zoom-summary h3{margin:0 0 8px;color:var(--navy);font-size:17px}.zoom-items{display:grid;grid-template-columns:1fr 1fr;gap:6px 18px}.zitem{display:flex;align-items:flex-start;gap:8px;padding:5px 0;border:0;background:transparent;width:100%;text-align:left;min-height:0;font-size:13px;font-weight:800}.zdot{width:9px;height:20px;border-radius:3px;flex:0 0 auto}
+@media(max-width:700px){.page{padding:16px 12px 22px}h1{font-size:28px}.months{min-width:1280px}#monthDialog{width:calc(100% - 14px);max-height:94vh}.month-modal{padding:12px}.month-modal-title{font-size:22px}.zoom-grid{min-width:920px}.zoom-items{grid-template-columns:1fr}}
 </style>
 </head>
-<body><main class="wrap">
-<a href="../">← Mark Dashboard</a>
-<div class="card">
-<h1>Family Calendar</h1>
-<p class="muted">The calendar location is ready. The detailed family/travel calendar has not been published here yet.</p>
+<body>
+<div class="page">
+  <div class="top">
+    <div><h1>Daly Family – Travel and Key Events</h1><div class="sub">Rolling four-month interactive calendar</div></div>
+    <div class="actions"><button id="prevBtn" type="button">← Previous 4</button><button id="todayBtn" type="button">Today</button><button id="nextBtn" type="button">Next 4 →</button></div>
+  </div>
+  <div class="legend" id="legend"></div>
+  <div class="filters" id="filters"></div>
+  <div class="calendar-shell"><div id="months" class="months"></div></div>
+  <div class="status" id="status" aria-live="polite"></div>
 </div>
-</main></body>
+
+<dialog id="eventDialog">
+  <div class="modal">
+    <h2 id="modalTitle"></h2>
+    <div class="modal-cat"><span id="modalDot" class="swatch"></span><span id="modalCat"></span></div>
+    <div class="modal-row" id="modalDates"></div>
+    <div class="modal-actions"><button id="closeEventDialog" type="button">Close</button></div>
+  </div>
+</dialog>
+
+<dialog id="monthDialog">
+  <div class="month-modal">
+    <div class="month-modal-top">
+      <div><h2 class="month-modal-title" id="monthModalTitle"></h2><div class="month-modal-sub" id="monthModalQuote"></div></div>
+      <button class="month-close" id="closeMonthDialog" type="button">Close</button>
+    </div>
+    <div class="month-scroll"><div class="zoom-grid" id="zoomGrid"></div></div>
+    <div class="zoom-summary"><h3>Key items</h3><div class="zoom-items" id="zoomItems"></div></div>
+  </div>
+</dialog>
+
+<script>
+const events = [
+  {start:'2026-09-24',end:'2026-09-24',label:'Public holiday',cat:'personal'},
+  {start:'2026-09-24',end:'2026-09-24',label:'Braai at Blake / Anandi · 5pm',cat:'personal'},
+  {start:'2026-09-25',end:'2026-09-25',label:'Leave + family lunch at La Colombe',cat:'personal'},
+  {start:'2026-09-25',end:'2026-09-25',label:'Blood tests',cat:'personal'},
+  {start:'2026-09-27',end:'2026-10-04',label:'Morocco',cat:'north_africa'},
+  {start:'2026-09-28',end:'2026-09-28',label:'BMW service',cat:'personal'},
+  {start:'2026-09-30',end:'2026-09-30',label:'Cipla Maroc Board Meeting',cat:'key_meeting'},
+  {start:'2026-10-05',end:'2026-10-05',label:'Day off',cat:'personal'},
+  {start:'2026-10-05',end:'2026-10-06',label:'CDG Elevate',cat:'ssa'},
+  {start:'2026-10-07',end:'2026-10-07',label:'Emma Term 4 start',cat:'personal'},
+  {start:'2026-10-08',end:'2026-10-08',label:'Blake birthday dinner',cat:'personal'},
+  {start:'2026-10-09',end:'2026-10-09',label:'Alan / Ashley farewell dinner',cat:'personal'},
+  {start:'2026-10-11',end:'2026-10-15',label:'Kenya Xceed',cat:'ssa'},
+  {start:'2026-10-16',end:'2026-10-16',label:'Morocco Review - Paul',cat:'key_meeting'},
+  {start:'2026-10-19',end:'2026-10-19',label:'NA Governance',cat:'key_meeting'},
+  {start:'2026-10-20',end:'2026-10-20',label:'SSA Governance',cat:'key_meeting'},
+  {start:'2026-10-21',end:'2026-10-21',label:'OneAfrica Governance',cat:'key_meeting'},
+  {start:'2026-10-22',end:'2026-10-22',label:'H1 Results',cat:'key_meeting'},
+  {start:'2026-10-24',end:'2026-10-24',label:'Prakash party bus · 11:20am',cat:'personal'},
+  {start:'2026-11-03',end:'2026-11-03',label:'OLAP feedback',cat:'key_meeting'},
+  {start:'2026-11-15',end:'2026-11-20',label:'Mauritius sales conf',cat:'ssa'},
+  {start:'2026-11-18',end:'2026-11-18',label:'OneAfrica Governance',cat:'key_meeting'},
+  {start:'2026-11-23',end:'2026-11-23',label:'MBR - Achine',cat:'key_meeting'},
+  {start:'2026-11-26',end:'2026-11-26',label:'CMSA Board meeting',cat:'key_meeting'},
+  {start:'2026-11-26',end:'2026-11-30',label:'China Respi Summit (TBC)',cat:'international'},
+  {start:'2026-12-04',end:'2026-12-11',label:'Zimbali (WFA)',cat:'personal'},
+  {start:'2026-12-14',end:'2026-12-14',label:'OneAfrica Governance',cat:'key_meeting'},
+  {start:'2026-12-15',end:'2026-12-22',label:'Mauritius (holiday)',cat:'personal'},
+  {start:'2026-12-16',end:'2026-12-27',label:'Guy / Bel in CT',cat:'personal'},
+  {start:'2026-12-25',end:'2026-12-25',label:'Christmas Day',cat:'personal'}
+];
+const cats = {
+  north_africa:{label:'North Africa travel',fill:'#F05A82',dark:'#B72E55'},
+  ssa:{label:'SA & SSA travel',fill:'#8E5AF7',dark:'#5D35B8'},
+  international:{label:'Other international work',fill:'#F4A51C',dark:'#A96500'},
+  personal:{label:'Personal / family / holidays',fill:'#2EC866',dark:'#117A3C'},
+  key_meeting:{label:'Key meetings',fill:'#1992E6',dark:'#0C63A9'}
+};
+const quotes={9:'New months. New adventures.',10:'New places. Great experiences.',11:'Island time. Good for the soul.',12:'Time together. That matters.'};
+const monthNames=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const dow=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+let activeFilter='all', midnightTimer=null;
+let viewStart=firstOfMonth(new Date());
+
+function parts(d){return {y:d.getFullYear(),m:d.getMonth()+1,d:d.getDate()}}
+function iso(y,m,d){return `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`}
+function parseDateOnly(s){const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d,12)}
+function firstOfMonth(d){return new Date(d.getFullYear(),d.getMonth(),1,12)}
+function addMonths(d,n){return new Date(d.getFullYear(),d.getMonth()+n,1,12)}
+function currentTodayIso(){const n=new Date(),p=parts(n);return iso(p.y,p.m,p.d)}
+function formatRange(e){const s=parseDateOnly(e.start),en=parseDateOnly(e.end),sd=s.getDate(),ed=en.getDate(),sm=monthNames[s.getMonth()].slice(0,3),em=monthNames[en.getMonth()].slice(0,3);if(e.start===e.end)return `${sd} ${sm}`;if(s.getMonth()===en.getMonth()&&s.getFullYear()===en.getFullYear())return `${sd}–${ed} ${sm}`;return `${sd} ${sm}–${ed} ${em}`}
+function monthGridStart(y,m){const first=new Date(y,m-1,1,12);const off=(first.getDay()+6)%7;return new Date(y,m-1,1-off,12)}
+
+const earliest=parseDateOnly(events.map(e=>e.start).sort()[0]);
+const latest=parseDateOnly(events.map(e=>e.end).sort().slice(-1)[0]);
+const actualToday=new Date();
+if(actualToday<addMonths(firstOfMonth(earliest),-1)||actualToday>addMonths(firstOfMonth(latest),4))viewStart=firstOfMonth(earliest);
+
+Object.entries(cats).forEach(([k,v])=>{const p=document.createElement('span');p.className='pill';p.innerHTML=`<span class="swatch" style="background:${v.fill}"></span>${v.label}`;document.getElementById('legend').appendChild(p)});
+const trtPill=document.createElement('span');trtPill.className='pill';trtPill.innerHTML='<span class="swatch" style="background:#D7F0FD;border:1px solid #68BFEF"></span>TRT reminder · Mon / Fri';document.getElementById('legend').appendChild(trtPill);
+const filters=document.getElementById('filters');
+const allBtn=document.createElement('button');allBtn.type='button';allBtn.dataset.filter='all';allBtn.className='active';allBtn.textContent='Show all';filters.appendChild(allBtn);
+Object.entries(cats).forEach(([k,v])=>{const b=document.createElement('button');b.type='button';b.dataset.filter=k;b.textContent=v.label;filters.appendChild(b)});
+
+function visibleEventsForMonth(y,m){const ms=iso(y,m,1),me=iso(y,m,new Date(y,m,0).getDate());return events.filter(e=>(activeFilter==='all'||e.cat===activeFilter)&&!(e.end<ms||e.start>me))}
+function showEvent(e){document.getElementById('modalTitle').textContent=e.label;document.getElementById('modalCat').textContent=cats[e.cat].label;document.getElementById('modalDot').style.background=cats[e.cat].fill;document.getElementById('modalDates').textContent='Dates: '+formatRange(e);const dlg=document.getElementById('eventDialog');if(typeof dlg.showModal==='function')dlg.showModal()}
+function openEventFromMonth(e){const md=document.getElementById('monthDialog');if(md.open)md.close();setTimeout(()=>showEvent(e),30)}
+
+function showMonth(y,m){
+  const dlg=document.getElementById('monthDialog');
+  document.getElementById('monthModalTitle').textContent=`${monthNames[m-1]} ${y}`;
+  document.getElementById('monthModalQuote').textContent=quotes[m]||'';
+  const grid=document.getElementById('zoomGrid');grid.innerHTML='';
+  dow.forEach(name=>{const h=document.createElement('div');h.className='zdow';h.textContent=name;grid.appendChild(h)});
+  const start=monthGridStart(y,m),todayIso=currentTodayIso();
+  for(let i=0;i<42;i++){
+    const dt=new Date(start);dt.setDate(start.getDate()+i);const p=parts(dt),ds=iso(p.y,p.m,p.d);
+    const isTRTDay=(p.m===m && (dt.getDay()===1 || dt.getDay()===5));
+    const cell=document.createElement('div');cell.className='zday'+(p.m!==m?' other':'')+(isTRTDay?' trt-day':'');
+    const num=document.createElement('span');num.className='znum'+(ds===todayIso?' today':'');num.textContent=p.d;cell.appendChild(num);
+    if(isTRTDay){const tag=document.createElement('span');tag.className='ztrt-tag';tag.textContent='TRT';tag.title='TRT injection reminder';cell.appendChild(tag);}
+    events.filter(e=>(activeFilter==='all'||e.cat===activeFilter)&&e.start<=ds&&e.end>=ds).forEach(e=>{const b=document.createElement('button');b.type='button';b.className='zev';b.style.background=cats[e.cat].fill;b.textContent=e.label;b.addEventListener('click',()=>openEventFromMonth(e));cell.appendChild(b)});
+    grid.appendChild(cell);
+  }
+  const zi=document.getElementById('zoomItems');zi.innerHTML='';const evs=visibleEventsForMonth(y,m);
+  if(!evs.length){const x=document.createElement('div');x.className='empty';x.textContent='No items in this view.';zi.appendChild(x)}
+  else evs.forEach(e=>{const b=document.createElement('button');b.type='button';b.className='zitem';b.style.color=cats[e.cat].dark;b.innerHTML=`<span class="zdot" style="background:${cats[e.cat].fill}"></span><span>${formatRange(e)} · ${e.label}</span>`;b.addEventListener('click',()=>openEventFromMonth(e));zi.appendChild(b)});
+  if(typeof dlg.showModal==='function')dlg.showModal();
+}
+
+function renderMonth(container,y,m){
+  const card=document.createElement('section');card.className='card';
+  const mh=document.createElement('div');mh.className='mhead';
+  const monthBtn=document.createElement('button');monthBtn.type='button';monthBtn.className='month-open';monthBtn.setAttribute('aria-label',`Open enlarged ${monthNames[m-1]} ${y}`);monthBtn.innerHTML=`<div><div class="mtitle">${monthNames[m-1].toUpperCase()} ${y}</div><div class="zoom-hint">Tap month to enlarge</div></div><div class="quote">${quotes[m]||''}</div>`;monthBtn.addEventListener('click',()=>showMonth(y,m));mh.appendChild(monthBtn);card.appendChild(mh);
+  const grid=document.createElement('div');grid.className='grid';dow.forEach(name=>{const el=document.createElement('div');el.className='dow';el.textContent=name;grid.appendChild(el)});
+  const start=monthGridStart(y,m),todayIso=currentTodayIso();
+  for(let i=0;i<42;i++){
+    const dt=new Date(start);dt.setDate(start.getDate()+i);const p=parts(dt),ds=iso(p.y,p.m,p.d);
+    const isTRTDay=(p.m===m && (dt.getDay()===1 || dt.getDay()===5));
+    const cell=document.createElement('div');cell.className='day'+(p.m!==m?' other':'')+(isTRTDay?' trt-day':'');const num=document.createElement('span');num.className='num'+(ds===todayIso?' today':'');num.textContent=p.d;cell.appendChild(num);
+    if(isTRTDay){const tag=document.createElement('span');tag.className='trt-tag';tag.textContent='TRT';tag.title='TRT injection reminder';cell.appendChild(tag);}
+    events.filter(e=>(activeFilter==='all'||e.cat===activeFilter)&&e.start<=ds&&e.end>=ds).forEach(e=>{const bar=document.createElement('button');bar.type='button';bar.className='ev';bar.style.background=cats[e.cat].fill;bar.textContent=e.label;bar.title=`${e.label} · ${formatRange(e)}`;bar.addEventListener('click',()=>showEvent(e));cell.appendChild(bar)});
+    grid.appendChild(cell);
+  }
+  card.appendChild(grid);
+  const sum=document.createElement('div');sum.className='summary';sum.innerHTML='<h3>Key items</h3>';const evs=visibleEventsForMonth(y,m);
+  if(!evs.length){const x=document.createElement('div');x.className='empty';x.textContent='No items in this view.';sum.appendChild(x)}
+  else evs.forEach(e=>{const it=document.createElement('button');it.type='button';it.className='item';it.style.color=cats[e.cat].dark;it.innerHTML=`<span class="dot" style="background:${cats[e.cat].fill}"></span><span>${formatRange(e)} · ${e.label}</span>`;it.addEventListener('click',()=>showEvent(e));sum.appendChild(it)});
+  card.appendChild(sum);container.appendChild(card);
+}
+
+function render(){const holder=document.getElementById('months');holder.innerHTML='';for(let i=0;i<4;i++){const d=addMonths(viewStart,i);renderMonth(holder,d.getFullYear(),d.getMonth()+1)}const end=addMonths(viewStart,3),now=new Date();document.getElementById('status').textContent=`Showing ${monthNames[viewStart.getMonth()]} ${viewStart.getFullYear()} – ${monthNames[end.getMonth()]} ${end.getFullYear()} · Today: ${now.toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short',year:'numeric'})}`}
+function scheduleMidnightRefresh(){if(midnightTimer)clearTimeout(midnightTimer);const now=new Date(),next=new Date(now.getFullYear(),now.getMonth(),now.getDate()+1,0,0,1);midnightTimer=setTimeout(()=>{render();scheduleMidnightRefresh()},next-now)}
+
+document.querySelectorAll('#filters button').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('#filters button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');activeFilter=btn.dataset.filter;render()}));
+document.getElementById('prevBtn').addEventListener('click',()=>{viewStart=addMonths(viewStart,-4);render()});
+document.getElementById('nextBtn').addEventListener('click',()=>{viewStart=addMonths(viewStart,4);render()});
+document.getElementById('todayBtn').addEventListener('click',()=>{viewStart=firstOfMonth(new Date());activeFilter='all';document.querySelectorAll('#filters button').forEach(b=>b.classList.toggle('active',b.dataset.filter==='all'));render()});
+document.getElementById('closeEventDialog').addEventListener('click',()=>document.getElementById('eventDialog').close());
+document.getElementById('eventDialog').addEventListener('click',e=>{if(e.target===e.currentTarget)e.currentTarget.close()});
+document.getElementById('closeMonthDialog').addEventListener('click',()=>document.getElementById('monthDialog').close());
+document.getElementById('monthDialog').addEventListener('click',e=>{if(e.target===e.currentTarget)e.currentTarget.close()});
+render();scheduleMidnightRefresh();
+</script>
+</body>
 </html>
