@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Health Dashboard">
-<title>Mark — Health & Performance Dashboard V1.2</title>
+<title>Mark — Health & Performance Dashboard</title>
 <style>
 :root{
   --navy:#0B2B4A;--navy2:#123E64;--ink:#17202A;--muted:#6D7782;--bg:#F3F7FA;--card:#FFFFFF;
@@ -167,9 +167,9 @@ dialog{border:0;border-radius:18px;padding:0;width:min(720px,calc(100% - 28px));
   <section class="hero">
     <div class="topline">
       <div>
-        <div class="kicker">Health & Performance Dashboard · Version 1.2</div>
+        <div class="kicker">Health & Performance Dashboard · Live</div>
         <h1>Mark — performance is improving in strength and body composition, while aerobic capacity and autonomic recovery remain the main gaps.</h1>
-        <div class="sub">Data through 23 Sep 2026 · Excel scope restricted to <b>Weight</b> and <b>Training</b> tabs only.</div>
+        <div class="sub"><b>Last updated 24 Sep 2026</b> · Core Weight/Training metrics through 23 Sep · Strength benchmarks through 24 Sep · Excel scope restricted to <b>Weight</b> and <b>Training</b> tabs only.</div>
       </div>
       <div class="hero-actions">
         <button onclick="window.print()">Print / Save PDF</button>
@@ -356,7 +356,7 @@ dialog{border:0;border-radius:18px;padding:0;width:min(720px,calc(100% - 28px));
   </section>
 
   <div class="footer">
-    <b>V1.2 data sources:</b> uploaded Excel workbook — <b>Weight</b> and <b>Training</b> tabs only; WHOOP 6-month trend screenshots; InBody result sheets dated 05 Dec 2025, 28 Aug 2026 and 11 Sep 2026; previously shared Training Progress screenshots / logs; and the interactive family calendar for travel context. The dashboard is for personal performance tracking and is not a medical diagnosis. V1.2 adds iPhone/iPad responsive layout, touch-friendly navigation and Home Screen web-app metadata.
+    <b>V1.2 data sources:</b> uploaded Excel workbook — <b>Weight</b> and <b>Training</b> tabs only; WHOOP 6-month trend screenshots; InBody result sheets dated 05 Dec 2025, 28 Aug 2026 and 11 Sep 2026; previously shared Training Progress screenshots / logs; and the interactive family calendar for travel context. The dashboard is for personal performance tracking and is not a medical diagnosis. Build 1.3 retains the iPhone/iPad responsive layout and adds 24 Sep strength-benchmark data plus clearer data-freshness labeling.
   </div>
 </div>
 
@@ -368,7 +368,7 @@ dialog{border:0;border-radius:18px;padding:0;width:min(720px,calc(100% - 28px));
     <li>September Training is month-to-date; the source sheet uses a month-end bucket but the dashboard labels it to 23 Sep.</li>
     <li>The latest waist available in the spreadsheet is 106 cm on 11 Sep 2026.</li>
     <li>Pace of Aging and WHOOP Age are shown as headline indicators only because the screenshot does not provide exact monthly values for every point.</li>
-    <li>Strength benchmarks were transcribed from previously shared Training Progress screenshots / logs. DB chest press is always classified as flat and dumbbell loads are treated as the combined load across both dumbbells.</li>
+    <li>Strength benchmarks were transcribed from previously shared Training Progress screenshots / logs. DB chest press is always classified as flat and dumbbell loads are treated as the combined load across both dumbbells.</li><li>The 24 Sep DB chest press benchmark is included from the Training Progress tracker before the Excel Training tab is updated; core Weight/Training summary metrics therefore remain through 23 Sep while strength benchmarks run through 24 Sep.</li>
     <li>Estimated 1RM uses the Epley formula. Incomplete sets are shown but excluded from volume / strength-index calculations.</li>
     <li>Near-term travel context is linked to the training view so equipment-limited or travel-affected sessions are interpreted correctly.</li>
   </ul>
@@ -383,7 +383,8 @@ const STRENGTH={
     {date:'2026-08-11',variant:'DB chest press',sets:[{w:40,r:10},{w:44,r:10},{w:44,r:10}],context:'Home'},
     {date:'2026-08-20',variant:'DB chest press',sets:[{w:44,r:8},{w:44,r:8},{w:44,r:8},{w:44,r:8}],context:'Home'},
     {date:'2026-09-03',variant:'DB chest press',sets:[{w:44,r:10},{w:48,r:10},{w:48,r:8},{w:48,r:8}],context:'Home'},
-    {date:'2026-09-17',variant:'DB chest press',sets:[{w:40,r:8},{w:40,r:8},{w:40,r:9}],context:'Algeria · hotel DB ceiling',travel:true,limited:true}
+    {date:'2026-09-17',variant:'DB chest press',sets:[{w:40,r:8},{w:40,r:8},{w:40,r:9}],context:'Algeria · hotel DB ceiling',travel:true,limited:true},
+    {date:'2026-09-24',variant:'DB chest press',sets:[{w:52,r:10},{w:56,r:8},{w:56,r:6},{w:56,r:7}],context:'Home · chest / triceps'}
   ]},
   row:{label:'Seated row',meta:'Same movement tracked across five comparable sessions.',entries:[
     {date:'2026-08-18',variant:'Seated row',sets:[{w:80,r:8},{w:85,r:8},{w:85,r:8},{w:85,r:8}],context:'Home'},
