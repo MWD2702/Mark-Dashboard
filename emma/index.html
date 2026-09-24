@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Emma Daly – Grade 9 Academic Dashboard 2026</title>
+<style>
+:root {
+  --navy:#0B2B4A; --navy2:#123F68; --ink:#17202A; --muted:#687785; --bg:#F4F8FB;
+  --card:#FFFFFF; --grid:#D7E0E7; --blue:#2878B5; --teal:#16807A; --purple:#7656A8;
+  --gold:#B9892B; --green:#2D7A56; --red:#A74747; --softblue:#EAF2F8; --softgreen:#EDF7F1;
+  --softred:#FAEEEE; --softgold:#FBF5E8; --shadow:0 4px 18px rgba(12,43,74,.07);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:Arial,Helvetica,sans-serif;color:var(--ink)}
+.page{max-width:1500px;margin:0 auto;padding:22px 20px 36px}
+.top{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap}
+h1{font-family:Georgia,serif;color:var(--navy);font-size:34px;line-height:1.08;margin:0}
+.sub{color:var(--muted);margin-top:6px;font-size:14px}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+button{font:inherit;cursor:pointer;border:1px solid #CBD6DF;background:#fff;color:var(--navy);border-radius:10px;padding:9px 12px;font-weight:700;min-height:40px}
+button:hover{background:#F2F6F9} button:focus-visible,input:focus-visible{outline:3px solid #8CCAF4;outline-offset:2px}
+.primary{background:var(--navy);color:white;border-color:var(--navy)}
+.notice{margin-top:15px;border:1px solid #D7E3EC;background:#fff;border-radius:14px;padding:12px 14px;color:#425467;font-size:13px;line-height:1.45}
+.kpis{display:grid;grid-template-columns:repeat(6,minmax(150px,1fr));gap:10px;margin-top:14px}
+.kpi{background:var(--card);border:1px solid var(--grid);border-radius:15px;padding:14px;box-shadow:var(--shadow);min-width:0}
+.kpi .label{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:800}
+.kpi .value{font-size:28px;color:var(--navy);font-weight:850;margin-top:6px;line-height:1}
+.kpi .detail{font-size:12px;color:var(--muted);margin-top:7px;min-height:15px}
+.section{margin-top:16px}
+.section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:9px}
+.section-head h2{font-size:18px;color:var(--navy);margin:0}
+.section-head p{font-size:12px;color:var(--muted);margin:0}
+.grid2{display:grid;grid-template-columns:1.15fr .85fr;gap:12px}
+.panel{background:#fff;border:1px solid var(--grid);border-radius:16px;padding:15px;box-shadow:var(--shadow);min-width:0}
+.panel h3{font-size:15px;color:var(--navy);margin:0 0 10px}
+.chart-wrap{min-height:250px}
+svg{width:100%;height:auto;display:block}
+.insight-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.insight{border:1px solid var(--grid);border-radius:12px;padding:11px;background:#FBFCFD}
+.insight .eyebrow{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:800}
+.insight .main{font-size:16px;font-weight:800;color:var(--navy);margin-top:5px;line-height:1.25}
+.insight .small{font-size:12px;color:var(--muted);margin-top:5px;line-height:1.35}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.table-wrap{overflow-x:auto;border:1px solid var(--grid);border-radius:14px}
+table{width:100%;border-collapse:collapse;min-width:1040px;background:#fff}
+thead th{position:sticky;top:0;background:#EFF5F9;color:var(--navy);font-size:11px;text-transform:uppercase;letter-spacing:.04em;text-align:right;padding:10px 9px;border-bottom:1px solid var(--grid);z-index:1}
+thead th:first-child, thead th:nth-child(2){text-align:left}
+tbody td{padding:10px 9px;border-bottom:1px solid #E7EDF2;text-align:right;font-size:13px;vertical-align:middle}
+tbody tr:last-child td{border-bottom:0}
+tbody td:first-child,tbody td:nth-child(2){text-align:left}
+.subject-name{font-weight:800;color:var(--navy);font-size:13px}
+.subject-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.teacher{font-size:11px;color:var(--muted);margin-top:3px}
+.include-cell{width:48px;text-align:center!important}
+input[type="checkbox"]{width:19px;height:19px;accent-color:var(--navy);cursor:pointer}
+.target{width:76px;border:1px solid #C7D4DE;border-radius:9px;padding:8px 7px;font:inherit;text-align:right;background:#fff}
+.trend-badge,.score-badge{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:4px 8px;font-size:11px;font-weight:800;white-space:nowrap}
+.up{background:var(--softgreen);color:var(--green)} .down{background:var(--softred);color:var(--red)} .flat{background:#EFF2F4;color:#5E6B75}
+.high{background:#EDF7F1;color:#236748} .mid{background:#EDF4FA;color:#315F86} .watch{background:#FBF5E8;color:#8A651F}
+.excluded{opacity:.48;background:#F8FAFB}
+.detail-btn{padding:6px 8px;min-height:32px;border-radius:8px;font-size:11px}
+.feedback-row td{padding:0;background:#FAFCFD;text-align:left!important}
+.feedback-panel{padding:14px 16px 16px;border-top:1px dashed #D8E1E7}
+.feedback-summary{font-size:13px;line-height:1.5;margin-bottom:10px;color:#34495A}
+.feedback-tags{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:10px}
+.tagbox{border:1px solid #DCE4EA;background:white;border-radius:10px;padding:9px}
+.tagbox b{display:block;color:var(--navy);font-size:11px;text-transform:uppercase;margin-bottom:4px}
+.comment-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.comment{border:1px solid #DEE6EC;border-radius:10px;background:#fff;padding:10px;min-width:0}
+.comment h4{margin:0 0 6px;color:var(--navy);font-size:12px}
+.comment p{margin:0;color:#425467;font-size:12px;line-height:1.45}
+.themes{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.theme-list{margin:0;padding-left:18px;color:#34495A;font-size:13px;line-height:1.5}
+.theme-list li{margin:7px 0}
+.callout{padding:11px 12px;border-radius:12px;border:1px solid #D9E3EA;background:#F8FBFD;font-size:13px;line-height:1.5}
+.callout strong{color:var(--navy)}
+.whole{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.whole-card{border:1px solid var(--grid);border-radius:12px;padding:11px;background:#fff}
+.whole-card h4{margin:0 0 6px;color:var(--navy);font-size:13px}
+.whole-card p{margin:0;font-size:12px;line-height:1.45;color:#425467}
+.foot{margin-top:16px;font-size:11px;color:var(--muted);line-height:1.45}
+.mono{font-variant-numeric:tabular-nums}
+@media(max-width:1100px){.kpis{grid-template-columns:repeat(3,1fr)}.grid2,.themes{grid-template-columns:1fr}}
+@media(max-width:720px){
+  .page{padding:16px 12px 28px} h1{font-size:28px} .kpis{grid-template-columns:repeat(2,1fr)} .comment-grid,.whole,.feedback-tags{grid-template-columns:1fr}
+  .kpi .value{font-size:24px} .panel{padding:12px}
+}
+@media print{
+ body{background:#fff} .page{max-width:none;padding:0} .actions,.controls,.detail-btn{display:none!important} .panel,.kpi{box-shadow:none} .table-wrap{overflow:visible}
+ table{min-width:0;font-size:9px} thead th,tbody td{padding:5px 4px} .feedback-row{display:none!important}
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="top">
+    <div>
+      <h1>Emma Daly · Grade 9 Academic Dashboard</h1>
+      <div class="sub">Bridge House · 2026 · Terms 1–3 actuals + interactive Term 4 target planning</div>
+    </div>
+    <div class="actions">
+      <button id="selectAllBtn" type="button">Select all subjects</button>
+      <button id="selectNoneBtn" type="button">Clear selection</button>
+      <button id="resetBtn" type="button">Reset targets</button>
+      <button id="printBtn" class="primary" type="button">Print / Save PDF</button>
+    </div>
+  </div>
+
+  <div class="notice">
+    <strong>Calculation assumption:</strong> all averages in this dashboard use a simple arithmetic mean with equal subject weighting and equal Term 1–4 weighting. This is a planning view, not an official Bridge House year-mark calculation. Creative Arts is treated as one continuous subject (Visual Arts in Terms 1–2 and Design in Term 3).
+  </div>
+
+  <div class="kpis">
+    <div class="kpi"><div class="label">Subjects included</div><div class="value mono" id="kSelected">10</div><div class="detail">Use checkboxes to change the aggregate</div></div>
+    <div class="kpi"><div class="label">Term 1 average</div><div class="value mono" id="kT1">78.1%</div><div class="detail" id="dT1">All subjects</div></div>
+    <div class="kpi"><div class="label">Term 2 average</div><div class="value mono" id="kT2">79.0%</div><div class="detail" id="dT2">+0.9 pts vs T1</div></div>
+    <div class="kpi"><div class="label">Term 3 average</div><div class="value mono" id="kT3">76.5%</div><div class="detail" id="dT3">−2.5 pts vs T2</div></div>
+    <div class="kpi"><div class="label">YTD average</div><div class="value mono" id="kYTD">77.9%</div><div class="detail">Mean of Terms 1–3</div></div>
+    <div class="kpi"><div class="label">Projected full year</div><div class="value mono" id="kFY">—</div><div class="detail" id="dFY">Enter T4 targets for selected subjects</div></div>
+  </div>
+
+  <section class="section grid2">
+    <div class="panel">
+      <div class="section-head">
+        <div><h2>Selected-subject academic trajectory</h2><p>Updates automatically when subjects are included/excluded.</p></div>
+      </div>
+      <div class="chart-wrap"><svg id="trendChart" viewBox="0 0 760 260" role="img" aria-label="Average mark trend for selected subjects"></svg></div>
+    </div>
+    <div class="panel">
+      <div class="section-head"><div><h2>What the numbers say</h2><p>Dynamic view based on the selected subjects.</p></div></div>
+      <div class="insight-grid">
+        <div class="insight"><div class="eyebrow">Strongest YTD</div><div class="main" id="iStrong">Coding & Robotics · 88.0%</div><div class="small">Highest selected YTD subject average.</div></div>
+        <div class="insight"><div class="eyebrow">Best T1 → T3 move</div><div class="main" id="iImprove">French · +15 pts</div><div class="small">Change from Term 1 to Term 3.</div></div>
+        <div class="insight"><div class="eyebrow">Largest T1 → T3 drop</div><div class="main" id="iDrop">Social Sciences · −21 pts</div><div class="small">A prompt for diagnosis, not a judgement on effort.</div></div>
+        <div class="insight"><div class="eyebrow">T4 target coverage</div><div class="main" id="iCoverage">0 / 10 set</div><div class="small" id="iCoverageSub">Projected full-year average appears when all selected targets are entered.</div></div>
+      </div>
+      <div class="callout" style="margin-top:10px">
+        <strong>Default all-subject view:</strong> the aggregate moved from 78.1% in T1 to 79.0% in T2, then to 76.5% in T3. The T3 softening is concentrated rather than universal: French and Afrikaans improved, Mathematics was stable, while English, Social Sciences, EMS and Natural Sciences fell from T2.
+      </div>
+    </div>
+  </section>
+
+  <section class="section panel">
+    <div class="section-head">
+      <div><h2>Subject performance, inclusion and Term 4 targets</h2><p>Uncheck any subject that should not count. Enter a T4 target to see the projected full-year subject average.</p></div>
+      <div class="controls">
+        <button id="fillYtdBtn" type="button">Set T4 targets = current YTD</button>
+        <button id="fill80Btn" type="button">Set all T4 targets to 80%</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Include</th><th>Subject</th><th>T1</th><th>T2</th><th>T3</th><th>T1→T3</th><th>YTD avg</th><th>T4 target</th><th>Projected FY</th><th>Feedback</th>
+          </tr>
+        </thead>
+        <tbody id="subjectBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section themes">
+    <div class="panel">
+      <h3>Common strengths across teacher feedback</h3>
+      <ul class="theme-list">
+        <li><strong>Diligence and work ethic:</strong> repeated across Afrikaans, French, EMS, Natural Sciences, Coding and the general classroom comments.</li>
+        <li><strong>Creative capability:</strong> especially strong in Visual Arts/Design, with additional evidence in French project work. Teachers repeatedly note originality, visual judgement, precision and attention to detail.</li>
+        <li><strong>Analytical/problem-solving ability:</strong> very clear in Coding & Robotics, EMS and English contextual analysis; Mathematics confirms a solid grasp of routine procedures.</li>
+        <li><strong>Positive character and peer contribution:</strong> respectful, kind, calm, supportive and a positive presence are recurring descriptions across academic, homeroom and sport feedback.</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h3>Common focus areas for Term 4</h3>
+      <ul class="theme-list">
+        <li><strong>Speak up and show confidence:</strong> oral delivery/class participation appears repeatedly in English, Afrikaans, French and Life Orientation. French T3 shows that increased participation can translate into stronger outcomes.</li>
+        <li><strong>Consistency in learning habits:</strong> Mathematics specifically calls for daily revision and asking when concepts are unclear; Life Orientation also flags consistency of effort.</li>
+        <li><strong>Depth over adequacy:</strong> EMS asks for more depth/detail; English asks for greater sophistication in creative writing; Mathematics asks for confidence with complex rather than routine questions.</li>
+        <li><strong>Diagnose subject-specific volatility:</strong> Social Sciences and English warrant a closer look at T3 assessment components, while French's rebound suggests the underlying capability is stronger than the T2 result alone implied.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section panel">
+    <div class="section-head"><div><h2>Trend interpretation</h2><p>Three-term pattern, based on equal-weight planning averages.</p></div></div>
+    <div class="whole">
+      <div class="whole-card"><h4>Strong, sustained areas</h4><p>Creative Arts (87.3% YTD), Coding & Robotics (88.0%) and EMS (86.3%) are the clearest sustained academic strengths. Social Sciences remains strong on a YTD basis at 82.0%, despite the T3 decline.</p></div>
+      <div class="whole-card"><h4>Stable core</h4><p>Mathematics is almost flat at 74% → 73% → 74%. Afrikaans improves steadily from 70% → 75% → 78%. These are useful indicators that consistent habits can translate into stable or improving performance.</p></div>
+      <div class="whole-card"><h4>Volatility to understand</h4><p>French swings 75% → 63% → 90%. English moves 79% → 81% → 68%, and Social Sciences 92% → 83% → 71%. The teacher commentary does not support a simple conclusion of declining effort, so assessment mix and specific skill gaps should be examined before drawing broader conclusions.</p></div>
+    </div>
+  </section>
+
+  <section class="section panel">
+    <div class="section-head"><div><h2>Whole-person feedback</h2><p>Recurring themes from homeroom and sport comments.</p></div></div>
+    <div class="whole">
+      <div class="whole-card"><h4>Peer relationships</h4><p>Emma is repeatedly described as kind, friendly, helpful, well-liked and supportive of peers. This is consistent across homeroom and academic teachers.</p></div>
+      <div class="whole-card"><h4>Resilience and team contribution</h4><p>Netball feedback highlights grit, determination, reliability in defence and active encouragement of teammates. Term 3 notes meaningful development in her defensive skill set.</p></div>
+      <div class="whole-card"><h4>Confidence is the leverage point</h4><p>The strongest cross-report development theme is not capability, but making her thinking more visible: contributing more openly in class, taking oral opportunities and asking questions when unsure.</p></div>
+    </div>
+  </section>
+
+  <div class="foot">
+    Source: Bridge House Grade 9 reports for Terms 1, 2 and 3 (2026). This dashboard is a family planning tool. It does not attempt to reproduce the school's official year-mark weighting, because no Term 4 weighting methodology is stated in the reports.
+  </div>
+</div>
+
+<script>
+(() => {
+  const subjects = [{"id": "english", "name": "English Home Language", "teacher": "Mr R Neale", "t1": 79, "t2": 81, "t3": 68, "module": "", "summary": "Strong textual analysis and comprehension. The recurring opportunity is to convert that insight into stronger oral delivery, editing and more sophisticated creative writing.", "strength": "Insight, comprehension and textual analysis", "focus": "Oral confidence; editing; creative-writing technique", "comments": {"Term 1": "Emma had a fantastic term in English. I was especially impressed by her novel contextual, which exhibited a profoundly detailed understanding of the text and an exceptional ability to elaborate. While her prepared speech was pleasing, with greater confidence she will achieve an even better mark. Emma is a pleasure to teach for her respectful demeanour and her kind nature.", "Term 2": "Emma has had another exceptional term in English. She excelled in the examination, displaying mastery of comprehension and poetry. However, she struggled with the editing section. She also found the creative writing assessment challenging. I encourage her to aim for more sophistication, making full use of literary techniques to create a striking effect. Emma is an incredibly dedicated student with impressive insight. She is an absolute pleasure to teach.", "Term 3": "Emma excelled in the contextual test. Her grasp of Shakespeare's Early Modern English is very impressive and will stand her in good stead. I would encourage Emma to refine her approach to oral assessments. Her prepared reading did not demonstrate her full potential and was therefore a missed opportunity. Emma is a dedicated young person, always displaying consideration towards her peers, making her a pleasure to teach."}}, {"id": "afrikaans", "name": "Afrikaans Eerste Addisionele Taal", "teacher": "Mr R Coetzer / Ms M Burger", "t1": 70, "t2": 75, "t3": 78, "module": "", "summary": "A clear upward academic trend, underpinned by diligence and strong writing. Teachers consistently point to confidence in spoken/class participation and selected language mechanics as the next step.", "strength": "Writing quality, diligence and consistency", "focus": "Class discussion confidence; tenses/voice; listening", "comments": {"Term 1": "Emma is a bright, kind and determined young person who always strives to do her best and accepts any challenge that comes her way. She is highly proficient in Afrikaans, especially in her writing. Her wonderfully written creative piece about \"'n Dag as my hond\" is well-crafted and written in her unique, witty voice. While she has a firm understanding of complex sentence structures, I advise her to practice active and passive voice and tenses. It has been a pleasure teaching her, and I wish her all the best for the future.", "Term 2": "Emma is a hardworking student who always strives to produce her best work. Although she may feel disappointed with her listening comprehension result, she performed very well in the examination. Emma has worked consistently throughout the term and can be proud of her overall performance. Her dedication and positive attitude have contributed greatly to her success.", "Term 3": "Emma is a diligent and dedicated pupil who consistently works hard to maintain the high standard she has set for herself. She performed well in both the prepared reading and the essay writing this term. I would love to see Emma become a little more actively involved in class discussions, as this will help her grow in confidence when communicating in Afrikaans. Her effort and dedication are commendable, and I am confident that she will continue to achieve great things."}}, {"id": "maths", "name": "Mathematics", "teacher": "Mr C Mouton", "t1": 74, "t2": 73, "t3": 74, "module": "", "summary": "Marks are remarkably stable. She understands routine procedures and content, but the teacher repeatedly highlights learning habits, asking for clarification and moving from routine to more complex problems.", "strength": "Solid content knowledge and routine procedures", "focus": "Daily revision; ask when unclear; complex questions; careless errors", "comments": {"Term 1": "Emma has produced good results, but there has been a noticeable decline in her performance, which may reflect her level of focus in class. Her recent assessment result highlights this concern. She needs to realise that the work covered now forms the foundation of Algebra in the years ahead, and it is therefore essential that she masters these concepts thoroughly. I encourage Emma to reflect on her learning strategy in Mathematics and make the necessary adjustments to ensure steady improvement in the months ahead. I wish her all the best for Term 2.", "Term 2": "Emma can be satisfied with her performance in Mathematics. However, I am concerned about the decline in her results this term. I would encourage her to communicate when concepts are unclear and to consistently revise the work covered in class each day. I am confident that she can address this next term if she focuses on the fundamental habits required to master Mathematics. I wish her all the best for Term 3.", "Term 3": "Emma can be very satisfied with her set of results this term. She has a good knowledge of the mathematical content and understands the routine procedures well, but she is not yet at the level where she can confidently master more complex questions. This can create opportunities for careless errors to creep into her work. I encourage her to communicate whenever concepts are unclear so that these can be addressed in class. I look forward to seeing her finish the year strongly."}}, {"id": "french", "name": "French Second Add. Language", "teacher": "Mr R Coetzer / Mr G Bestelink", "t1": 75, "t2": 63, "t3": 90, "module": "", "summary": "The most volatile subject, but Term 3 shows a very strong rebound. Participation and confidence improved materially, while the technical language foundations still benefit from deliberate revision.", "strength": "Listening/written production; creativity; improving participation", "focus": "Conjugation, adjectives, articles and consistent preparation", "comments": {"Term 1": "Emma is a wonderfully bright, engaged and motivated student who takes on all class activities with diligence and commitment. She enjoys group work and supporting her friends in completing group activities. While she achieved excellent results in the listening test and the first formal assessment, she unfortunately underperformed in the second assessment. While she demonstrated solid comprehension and understanding of verb conjugations, she did not study the map of Europe and could have completed her longer writing piece with greater effort. Apart from this, she has been a devoted student and a pleasure to teach.", "Term 2": "It was a pleasure meeting Emma this term. She is a quiet but friendly presence in the classroom, completing all activities. She performed well in her oral assessment and has a good ear for the language, achieving a pleasant result in her listening test. Emma achieved a satisfactory result in her June examination, excelling in her written production. She would see even greater results with revision of conjugation, adjectives and articles. I look forward to seeing Emma's progress, as I know she is capable of achieving higher results.", "Term 3": "Emma is a delight to have in class. She has impressed me this term by coming out of her shell a little and actively participating in class by answering questions. Her creative talent shone with her outstanding 'Moulin Rouge' stage. She had a good term in French and I look forward to seeing her continue to progress."}}, {"id": "creative", "name": "Creative Arts", "teacher": "Mrs M Maré / Mrs T Stoltz", "t1": 83, "t2": 89, "t3": 90, "module": "T1–T2 Visual Arts · T3 Design", "summary": "One of Emma's clearest strengths. Across both Visual Arts and Design, teachers repeatedly highlight creative vision, precision, visual judgement, attention to detail and commitment to quality.", "strength": "Creative vision, detail, precision and visual judgement", "focus": "Maintain challenge and stretch; no recurring concern identified", "comments": {"Term 1": "The Grade 9s created a collaborative clay sculpture this term. Emma approached her component with creativity, planning it through sketches and refining her ideas in gouache. Her sculpture was well-structured and imaginative. She was fully immersed in the creative process and responded well to guidance.", "Term 2": "Emma explored painting, drawing and printmaking, developing technical skills, art analysis and creative confidence. She performed well across all areas, demonstrating excellent fine motor skills and a strong sense of visual elements. Her attention to detail was particularly impressive, and she produced an excellent written art analysis based on the visit to the Rupert Museum.", "Term 3": "Emma demonstrates exceptional creative vision and a genuine passion for Design. Her talent is particularly evident in thoughtful layouts and the skilled integration of custom artwork. Her blue illustration highlighted meticulous attention to detail, precision and mastery of tone and line. She approaches every project with enthusiasm and a commitment to quality, consistently producing work of an outstanding standard."}}, {"id": "lo", "name": "Life Orientation", "teacher": "Ms C Windell / Miss S Jones", "t1": 64, "t2": 69, "t3": 60, "module": "", "summary": "A quieter subject academically. Feedback is positive on conduct and independent work, while consistency of effort and speaking up in whole-class settings are the recurring development opportunities.", "strength": "Independent, calm and well-mannered approach", "focus": "Consistency of effort; contribute insights more openly", "comments": {"Term 1": "The term focused on executive functioning skills and applying them practically. The assessment combined definitions, knowledge and application. The report did not include an individual narrative comment for Emma in Life Orientation.", "Term 2": "Emma performs really well when engaged and always brings a kind, calm energy to the classroom. I would like to encourage her to apply greater consistency in her efforts to unlock even more potential.", "Term 3": "Emma works independently during lessons and is always quiet and well-mannered. She engages well during small group settings, and it would be lovely to see her share her insights and ideas more openly during class time."}}, {"id": "coding", "name": "Coding and Robotics", "teacher": "Ms P Du Plessis", "t1": 91, "t2": 88, "t3": 85, "module": "", "summary": "A sustained high-performance subject. The mark has eased from an exceptional base, but teacher feedback remains consistently strong on logic, method, engineering, coding and practical execution.", "strength": "Analytical logic, problem-solving and methodical execution", "focus": "Maintain the high standard; no recurring concern identified", "comments": {"Term 1": "Emma has demonstrated a high level of problem-solving and algorithmic logic. She performed exceptionally well in the Arduino project, creating a robust traffic light system with clear, well-structured code. She also applied these logical skills to her Google Sheets Area Guide, using Apps Script to enhance the user experience. Her ability to transition between hardware-based coding and software automation shows great versatility in her technical capabilities.", "Term 2": "Emma has displayed fantastic analytical capability and a highly methodical work ethic across all practical modules. She demonstrated her strong computing skills by building an exceptionally well-formatted website that met all the required design briefs. Her hands-on engineering skills were equally apparent during the physical assembly of her push-button circuit. Emma's strong focus and consistent classroom participation ensure she consistently produces top-tier practical work.", "Term 3": "Emma tackled the egg drop challenge with strong computational logic, thoughtfully testing and refining her model. She shared her project findings effectively using a well-structured Google Slides slideshow. She then used JavaScript to code a clean, functional application that provided a practical solution for the tuckshop."}}, {"id": "social", "name": "Social Sciences", "teacher": "Mr M May / Mr H Pellow-Jarman", "t1": 92, "t2": 83, "t3": 71, "module": "", "summary": "The largest numerical decline from Term 1 to Term 3, although teacher comments remain positive and do not identify a clear effort problem. This is a trend worth discussing to understand assessment mix and specific knowledge/skills gaps.", "strength": "Maturity, positive attitude and ability to contribute", "focus": "Diagnose T3 decline; sustain answering/source-analysis technique", "comments": {"Term 1": "Emma has excelled remarkably in Grade 9 Social Sciences. She has remained dedicated to her studies and approaches her work with maturity, engaging well in the classroom. I have no doubt that she will continue to excel for the remainder of 2026.", "Term 2": "Emma is a pleasure to have in class and is always full of energy. Her positive attitude contributes to the classroom environment, and she is a delight to teach. I am confident that she will continue to work hard and achieve success in Geography.", "Term 3": "Emma is a pleasure to teach. She is reserved but confident in her ability to contribute to our lessons when required. I am sure she will make the most of the final term of the year."}}, {"id": "ems", "name": "Economic & Management Sciences", "teacher": "Mrs S Wray / Mrs O Kilfoil", "t1": 84, "t2": 94, "t3": 81, "module": "", "summary": "A clear strength with very strong aptitude, especially in Accounting. The main improvement point in Term 3 is depth and detail rather than understanding or work ethic.", "strength": "Accounting aptitude, diligence and grasp of new material", "focus": "Add depth and detail to written/project work", "comments": {"Term 1": "Emma has achieved outstanding results in EMS this term. She is an extremely capable student who applies herself diligently and consistently. Emma enjoyed collaborative work and demonstrated strong problem-solving skills. She is a positive influence and a wonderful role model to her peers.", "Term 2": "Emma has worked consistently and diligently throughout the term. She demonstrates a strong understanding of Accounting concepts and grasps new material with ease. Her natural aptitude for the subject is evident in the excellent results she continues to achieve. Emma displays a genuine affinity for Accounting, and it is recommended that she consider pursuing the subject in Grade 10.", "Term 3": "Emma is a focused and diligent learner who takes thorough notes and completes her classwork conscientiously. She produced a commendable task on Bhutan's economic system, although it would have benefited from greater depth and detail. Emma has consistently prepared well for both term assessments and has achieved pleasing, consistent results."}}, {"id": "science", "name": "Natural Sciences", "teacher": "Miss S Jones", "t1": 69, "t2": 75, "t3": 68, "module": "", "summary": "A steady, hard-working profile with evidence of progress, but marks remain around the high-60s/low-70s. Teachers emphasise confidence, persistence and keeping momentum through harder Physics and Chemistry concepts.", "strength": "Diligence, quiet determination and persistence", "focus": "Consolidate difficult concepts and maintain momentum", "comments": {"Term 1": "Emma is steadily building her confidence within the classroom and shows pride in her achievements. She has shown a growing commitment to her academics and shows a quiet determination. She can be proud of her efforts this term.", "Term 2": "Emma is a gentle, steady presence in class, always working away quietly and reliably. She received an excellent 90% on her first assessment this term and can be incredibly proud of herself. She has come a long way in her understanding, and I would like to encourage her to keep the momentum going as we take on Physics and Chemistry in the second half of the year.", "Term 3": "Emma has done well in tackling some of the difficult concepts we have explored in physics this term. She engages well in small group settings, and her diligence and work ethic are commendable. I would like to encourage her to continue and take this energy into the final term of the year."}}];
+  const rootKey = "emma-grade9-dashboard-v1";
+  const body = document.getElementById("subjectBody");
+  const fmt = n => Number.isFinite(n) ? n.toFixed(1) + "%" : "—";
+  const avg = arr => arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : NaN;
+  const signed = n => (n > 0 ? "+" : n < 0 ? "−" : "") + Math.abs(n).toFixed(1) + " pts";
+  const escapeHtml = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[c]));
+
+  let saved = {};
+  try { saved = JSON.parse(localStorage.getItem(rootKey) || "{}"); } catch(e) { saved = {}; }
+  const state = {};
+  subjects.forEach(s => {
+    const prior = saved[s.id] || {};
+    state[s.id] = {
+      included: prior.included !== false,
+      target: Number.isFinite(Number(prior.target)) && prior.target !== "" ? Number(prior.target) : null
+    };
+  });
+
+  function persist() {
+    const out = {};
+    subjects.forEach(s => out[s.id] = state[s.id]);
+    try { localStorage.setItem(rootKey, JSON.stringify(out)); } catch(e) {}
+  }
+
+  function ytd(s) { return (s.t1+s.t2+s.t3)/3; }
+  function fullYear(s) {
+    const t = state[s.id].target;
+    return Number.isFinite(t) ? (s.t1+s.t2+s.t3+t)/4 : NaN;
+  }
+  function levelClass(n) {
+    if(n >= 80) return "high";
+    if(n >= 70) return "mid";
+    return "watch";
+  }
+
+  function renderRows() {
+    body.innerHTML = subjects.map(s => {
+      const st = state[s.id];
+      const d = s.t3 - s.t1;
+      const dc = d > 0 ? "up" : d < 0 ? "down" : "flat";
+      const arrow = d > 0 ? "↑" : d < 0 ? "↓" : "→";
+      const fy = fullYear(s);
+      const comments = Object.entries(s.comments).map(([term,txt]) =>
+        `<div class="comment"><h4>${escapeHtml(term)}</h4><p>${escapeHtml(txt)}</p></div>`
+      ).join("");
+      return `
+        <tr class="${st.included ? "" : "excluded"}" data-row="${s.id}">
+          <td class="include-cell"><input aria-label="Include ${escapeHtml(s.name)}" type="checkbox" data-check="${s.id}" ${st.included ? "checked" : ""}></td>
+          <td><div class="subject-name">${escapeHtml(s.name)}</div>${s.module ? `<div class="subject-sub">${escapeHtml(s.module)}</div>` : ""}<div class="teacher">${escapeHtml(s.teacher)}</div></td>
+          <td class="mono">${s.t1}%</td><td class="mono">${s.t2}%</td><td class="mono">${s.t3}%</td>
+          <td><span class="trend-badge ${dc}">${arrow} ${Math.abs(d)} pts</span></td>
+          <td><span class="score-badge ${levelClass(ytd(s))} mono">${fmt(ytd(s))}</span></td>
+          <td><input class="target mono" data-target="${s.id}" type="number" min="0" max="100" step="0.5" placeholder="%" value="${st.target ?? ""}" aria-label="Term 4 target for ${escapeHtml(s.name)}"></td>
+          <td class="mono"><strong>${fmt(fy)}</strong></td>
+          <td><button class="detail-btn" type="button" data-detail="${s.id}" aria-expanded="false">View</button></td>
+        </tr>
+        <tr class="feedback-row" data-feedback="${s.id}" hidden>
+          <td colspan="10">
+            <div class="feedback-panel">
+              <div class="feedback-summary"><strong>Three-term read:</strong> ${escapeHtml(s.summary)}</div>
+              <div class="feedback-tags">
+                <div class="tagbox"><b>Clear strength</b>${escapeHtml(s.strength)}</div>
+                <div class="tagbox"><b>Term 4 focus</b>${escapeHtml(s.focus)}</div>
+              </div>
+              <div class="comment-grid">${comments}</div>
+            </div>
+          </td>
+        </tr>`;
+    }).join("");
+
+    body.querySelectorAll("[data-check]").forEach(el => el.addEventListener("change", e => {
+      state[e.target.dataset.check].included = e.target.checked;
+      persist(); renderRows(); update();
+    }));
+    body.querySelectorAll("[data-target]").forEach(el => el.addEventListener("input", e => {
+      const raw = e.target.value.trim();
+      let v = raw === "" ? null : Number(raw);
+      if(v !== null) {
+        if(!Number.isFinite(v)) v = null;
+        else v = Math.max(0, Math.min(100, v));
+      }
+      state[e.target.dataset.target].target = v;
+      if(v !== null && String(v) !== raw && raw !== "") e.target.value = v;
+      persist(); update(false);
+    }));
+    body.querySelectorAll("[data-detail]").forEach(btn => btn.addEventListener("click", e => {
+      const id = e.currentTarget.dataset.detail;
+      const row = body.querySelector(`[data-feedback="${id}"]`);
+      const open = row.hidden;
+      row.hidden = !open;
+      e.currentTarget.setAttribute("aria-expanded", String(open));
+      e.currentTarget.textContent = open ? "Hide" : "View";
+    }));
+  }
+
+  function selectedSubjects() { return subjects.filter(s => state[s.id].included); }
+
+  function update(refreshFYCells=true) {
+    const sel = selectedSubjects();
+    document.getElementById("kSelected").textContent = sel.length;
+    if(!sel.length) {
+      ["kT1","kT2","kT3","kYTD","kFY"].forEach(id => document.getElementById(id).textContent = "—");
+      document.getElementById("dT2").textContent = "Select at least one subject";
+      document.getElementById("dT3").textContent = "Select at least one subject";
+      document.getElementById("dFY").textContent = "No subjects selected";
+      document.getElementById("iStrong").textContent = "—";
+      document.getElementById("iImprove").textContent = "—";
+      document.getElementById("iDrop").textContent = "—";
+      document.getElementById("iCoverage").textContent = "0 / 0 set";
+      drawChart([]);
+      return;
+    }
+    const a1=avg(sel.map(s=>s.t1)), a2=avg(sel.map(s=>s.t2)), a3=avg(sel.map(s=>s.t3));
+    const ay=avg(sel.map(s=>ytd(s)));
+    document.getElementById("kT1").textContent=fmt(a1);
+    document.getElementById("kT2").textContent=fmt(a2);
+    document.getElementById("kT3").textContent=fmt(a3);
+    document.getElementById("kYTD").textContent=fmt(ay);
+    document.getElementById("dT2").textContent=signed(a2-a1)+" vs T1";
+    document.getElementById("dT3").textContent=signed(a3-a2)+" vs T2";
+    const targeted = sel.filter(s=>Number.isFinite(state[s.id].target));
+    const complete = targeted.length === sel.length;
+    const fyAvg = complete ? avg(sel.map(s=>fullYear(s))) : NaN;
+    document.getElementById("kFY").textContent=fmt(fyAvg);
+    document.getElementById("dFY").textContent=complete ? "Based on entered T4 targets" : `${targeted.length} / ${sel.length} T4 targets entered`;
+    document.getElementById("iCoverage").textContent=`${targeted.length} / ${sel.length} set`;
+    document.getElementById("iCoverageSub").textContent=complete ? `Selected T4 target average: ${fmt(avg(targeted.map(s=>state[s.id].target)))}` : "Projected full-year average appears when all selected targets are entered.";
+
+    const strongest = [...sel].sort((a,b)=>ytd(b)-ytd(a))[0];
+    const best = [...sel].sort((a,b)=>(b.t3-b.t1)-(a.t3-a.t1))[0];
+    const worst = [...sel].sort((a,b)=>(a.t3-a.t1)-(b.t3-b.t1))[0];
+    document.getElementById("iStrong").textContent=`${strongest.name} · ${fmt(ytd(strongest))}`;
+    document.getElementById("iImprove").textContent=`${best.name} · ${signed(best.t3-best.t1).replace(".0","")}`;
+    document.getElementById("iDrop").textContent=`${worst.name} · ${signed(worst.t3-worst.t1).replace(".0","")}`;
+
+    if(refreshFYCells) {
+      body.querySelectorAll("[data-row]").forEach(row => {
+        const id=row.dataset.row, s=subjects.find(x=>x.id===id);
+        row.classList.toggle("excluded",!state[id].included);
+        const cells=row.children;
+        cells[8].innerHTML=`<strong>${fmt(fullYear(s))}</strong>`;
+      });
+    }
+    const series=[a1,a2,a3];
+    if(complete) series.push(avg(targeted.map(s=>state[s.id].target)));
+    drawChart(series);
+  }
+
+  function drawChart(values) {
+    const svg=document.getElementById("trendChart");
+    if(!values.length) {
+      svg.innerHTML='<text x="380" y="130" text-anchor="middle" fill="#687785" font-size="16">Select at least one subject to display the trend.</text>';
+      return;
+    }
+    const labels=values.length===4?["Term 1","Term 2","Term 3","T4 target"]:["Term 1","Term 2","Term 3"];
+    const W=760,H=260,l=58,r=24,t=22,b=46;
+    const ymin=Math.max(40,Math.floor((Math.min(...values)-8)/5)*5);
+    const ymax=Math.min(100,Math.ceil((Math.max(...values)+8)/5)*5);
+    const span=Math.max(10,ymax-ymin);
+    const x=i=>l+i*((W-l-r)/(labels.length-1||1));
+    const y=v=>t+(ymax-v)*(H-t-b)/span;
+    let out='';
+    for(let g=ymin;g<=ymax;g+=5){
+      const yy=y(g);
+      out+=`<line x1="${l}" y1="${yy}" x2="${W-r}" y2="${yy}" stroke="#E4EBF0" stroke-width="1"/>`;
+      out+=`<text x="${l-10}" y="${yy+4}" text-anchor="end" fill="#71808D" font-size="11">${g}%</text>`;
+    }
+    const pts=values.map((v,i)=>`${x(i)},${y(v)}`).join(' ');
+    out+=`<polyline points="${pts}" fill="none" stroke="#0B2B4A" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`;
+    values.forEach((v,i)=>{
+      out+=`<circle cx="${x(i)}" cy="${y(v)}" r="7" fill="#fff" stroke="#0B2B4A" stroke-width="4"/>`;
+      out+=`<text x="${x(i)}" y="${y(v)-13}" text-anchor="middle" fill="#0B2B4A" font-size="14" font-weight="800">${v.toFixed(1)}%</text>`;
+      out+=`<text x="${x(i)}" y="${H-18}" text-anchor="middle" fill="#687785" font-size="12" font-weight="700">${labels[i]}</text>`;
+    });
+    svg.innerHTML=out;
+  }
+
+  document.getElementById("selectAllBtn").addEventListener("click",()=>{subjects.forEach(s=>state[s.id].included=true);persist();renderRows();update();});
+  document.getElementById("selectNoneBtn").addEventListener("click",()=>{subjects.forEach(s=>state[s.id].included=false);persist();renderRows();update();});
+  document.getElementById("resetBtn").addEventListener("click",()=>{subjects.forEach(s=>state[s.id].target=null);persist();renderRows();update();});
+  document.getElementById("fillYtdBtn").addEventListener("click",()=>{subjects.forEach(s=>{if(state[s.id].included) state[s.id].target=Math.round(ytd(s)*2)/2;});persist();renderRows();update();});
+  document.getElementById("fill80Btn").addEventListener("click",()=>{subjects.forEach(s=>{if(state[s.id].included) state[s.id].target=80;});persist();renderRows();update();});
+  document.getElementById("printBtn").addEventListener("click",()=>window.print());
+
+  renderRows();
+  update();
+})();
+</script>
+</body>
+</html>
