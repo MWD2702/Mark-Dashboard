@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0B2B4A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Health Dashboard">
+<title>Mark — Health & Performance Dashboard V1.2</title>
+<style>
+:root{
+  --navy:#0B2B4A;--navy2:#123E64;--ink:#17202A;--muted:#6D7782;--bg:#F3F7FA;--card:#FFFFFF;
+  --line:#D9E3EA;--teal:#00A88F;--green:#24B36B;--orange:#F4A51C;--red:#D94C4C;--purple:#7357D9;--blue:#1992E6;
+  --shadow:0 10px 28px rgba(11,43,74,.08)
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",Inter,Arial,Helvetica,sans-serif}
+button,a{font:inherit;-webkit-tap-highlight-color:transparent} button{touch-action:manipulation}
+.page{max-width:1550px;margin:0 auto;padding:20px 22px 44px}
+.hero{background:linear-gradient(125deg,var(--navy),var(--navy2));color:#fff;border-radius:22px;padding:24px 26px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;width:340px;height:340px;border-radius:50%;right:-120px;top:-160px;background:rgba(255,255,255,.06)}
+.topline{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;position:relative;z-index:1}
+.kicker{font-size:12px;letter-spacing:1.6px;text-transform:uppercase;font-weight:800;opacity:.75}
+h1{font-size:34px;line-height:1.08;margin:6px 0 5px}
+.sub{font-size:14px;opacity:.8}
+.hero-actions{display:flex;gap:8px;flex-wrap:wrap}
+.hero button{border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.10);color:#fff;border-radius:10px;padding:9px 12px;font-weight:750;cursor:pointer}
+.hero button:hover{background:rgba(255,255,255,.18)}
+.hero-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:22px;position:relative;z-index:1}
+.hero-kpi{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:14px}
+.hero-kpi .v{font-size:26px;font-weight:850;letter-spacing:-.5px} .hero-kpi .l{font-size:12px;opacity:.75;margin-top:3px} .hero-kpi .d{font-size:12px;margin-top:8px;font-weight:700}
+.section{margin-top:20px}
+.section-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-end;margin-bottom:10px}
+.section h2{margin:0;color:var(--navy);font-size:22px} .section-note{color:var(--muted);font-size:12px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px} .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px} .grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.card{background:var(--card);border:1px solid #DCE5EC;border-radius:16px;box-shadow:var(--shadow);padding:16px}
+.card.soft{box-shadow:none}
+.label{font-size:11px;text-transform:uppercase;letter-spacing:1.1px;color:var(--muted);font-weight:850}
+.big{font-size:30px;line-height:1.05;font-weight:850;color:var(--navy);margin-top:7px}
+.unit{font-size:15px;font-weight:750;color:var(--muted)}
+.meta{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.45}
+.delta{display:inline-flex;align-items:center;gap:5px;margin-top:9px;border-radius:999px;padding:4px 8px;font-size:11px;font-weight:800}
+.pos{background:#E1F6F0;color:#067A66} .watch{background:#FFF1D8;color:#A86100} .neutral{background:#EAF3FA;color:#285B7D}
+.progress{height:8px;background:#EDF2F5;border-radius:999px;overflow:hidden;margin-top:11px}
+.progress>span{display:block;height:100%;border-radius:inherit;background:var(--teal)}
+.insight{padding:16px;border-radius:16px;border:1px solid #DCE5EC;background:white;box-shadow:var(--shadow)}
+.insight .tag{font-size:10px;letter-spacing:1px;text-transform:uppercase;font-weight:900;margin-bottom:8px}
+.insight h3{margin:0 0 6px;font-size:17px;color:var(--navy)} .insight p{margin:0;color:#425466;line-height:1.45;font-size:13px}
+.tag.good{color:#087B66} .tag.attn{color:#A86100} .tag.focus{color:#225F91}
+.panel{background:#fff;border:1px solid #DCE5EC;border-radius:18px;box-shadow:var(--shadow);padding:16px}
+.panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px}
+.panel h3{margin:0;color:var(--navy);font-size:17px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tab{border:1px solid #CFDCE5;background:#fff;color:var(--navy);border-radius:999px;padding:6px 9px;font-size:11px;font-weight:800;cursor:pointer}
+.tab.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.chart{height:270px;width:100%;position:relative} .chart.small{height:240px}
+.chart svg{width:100%;height:100%;overflow:visible}
+.gridline{stroke:#E4EBF0;stroke-width:1} .axistext{fill:#7A8792;font-size:10px} .line-main{fill:none;stroke:var(--blue);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.line-soft{fill:none;stroke:#9BAAB6;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.dot-main{fill:#fff;stroke:var(--blue);stroke-width:2.5}
+.ref-line{stroke:#A9B7C2;stroke-width:1.2;stroke-dasharray:5 5} .ref-label{fill:#74818C;font-size:9px;font-weight:700}
+.bar{fill:var(--blue)} .bar2{fill:var(--purple)} .bar3{fill:var(--teal)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:4px;font-size:11px;color:var(--muted);font-weight:700} .lg{display:inline-flex;align-items:center;gap:6px} .sw{width:10px;height:10px;border-radius:3px}
+.stat-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:8px}
+.mini{border:1px solid #E0E8EE;background:#F9FBFC;border-radius:11px;padding:9px 10px} .mini b{display:block;color:var(--navy);font-size:17px} .mini span{font-size:10px;color:var(--muted)}
+.table-wrap{overflow:auto;border:1px solid #DFE7ED;border-radius:13px}
+table{border-collapse:collapse;width:100%;min-width:700px;background:#fff}
+th,td{padding:10px 11px;border-bottom:1px solid #E7EDF1;text-align:right;font-size:12px;white-space:nowrap}
+th:first-child,td:first-child{text-align:left} th{background:#F5F8FA;color:#526373;font-size:10px;text-transform:uppercase;letter-spacing:.7px} tr:last-child td{border-bottom:0}
+.goodcell{color:#087B66;font-weight:800} .warncell{color:#A86100;font-weight:800}
+.callout{background:linear-gradient(110deg,#EAF6FF,#F4FBFF);border:1px solid #C7E5F8;border-radius:15px;padding:14px 16px;color:#244A66;font-size:13px;line-height:1.5}
+.footer{margin-top:18px;font-size:11px;color:#7A8792;line-height:1.55}
+dialog{border:0;border-radius:18px;padding:0;width:min(720px,calc(100% - 28px));box-shadow:0 24px 65px rgba(0,0,0,.28)}dialog::backdrop{background:rgba(11,43,74,.45)}
+.modal{padding:20px} .modal h3{margin:0 0 10px;color:var(--navy)} .modal ul{margin:8px 0 0 20px;color:#425466;line-height:1.6}
+.close-row{display:flex;justify-content:flex-end;margin-top:14px} .close-row button{border:0;background:var(--navy);color:white;border-radius:9px;padding:8px 12px;font-weight:800;cursor:pointer}
+
+/* Strength benchmark module */
+.benchmark-layout{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(320px,.75fr);gap:12px}
+.benchmark-kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:10px 0 12px}
+.benchmark-kpi{border:1px solid #E0E8EE;background:#F9FBFC;border-radius:12px;padding:10px 11px;min-width:0}
+.benchmark-kpi .bk{font-size:10px;text-transform:uppercase;letter-spacing:.65px;color:var(--muted);font-weight:850}
+.benchmark-kpi .bv{display:block;color:var(--navy);font-size:20px;font-weight:850;margin-top:4px;white-space:nowrap}
+.benchmark-kpi .bd{display:block;font-size:10px;color:var(--muted);margin-top:3px;line-height:1.3}
+.benchmark-context{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.travel-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid #D8E2E9;background:#F8FAFC;border-radius:999px;padding:6px 9px;font-size:10px;font-weight:800;color:#40566A}
+.travel-chip.current{background:#FFF1D8;border-color:#F3CF8C;color:#8A5500}.travel-chip.future{background:#F3EEFF;border-color:#D8CCF8;color:#5740A9}
+.travel-dot{width:8px;height:8px;border-radius:50%;background:currentColor;opacity:.8}
+.benchmark-note{font-size:11px;color:#536675;line-height:1.45;margin-top:8px}
+.variant-badge{display:inline-flex;border-radius:999px;background:#EEF4F8;color:#35566E;padding:3px 7px;font-size:10px;font-weight:800}
+.context-travel{color:#A86100;font-weight:800}.context-normal{color:#536675}
+.strength-line{fill:none;stroke:var(--teal);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}.strength-dot{fill:#fff;stroke:var(--teal);stroke-width:2.6}.strength-dot.travel{stroke:var(--orange);fill:#FFF8EA}.travel-band{fill:#F4A51C;opacity:.09}.travel-band-label{fill:#A86100;font-size:9px;font-weight:800}
+.metric-help{background:#F8FAFC;border:1px solid #E0E8EE;border-radius:13px;padding:12px;font-size:11px;color:#536675;line-height:1.55}
+.metric-help b{color:var(--navy)}
+@media(max-width:1100px){.benchmark-layout{grid-template-columns:1fr}.benchmark-kpis{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:700px){.benchmark-kpis{grid-template-columns:1fr 1fr}.benchmark-kpi .bv{font-size:18px}}
+
+@media(max-width:1000px){.hero-summary,.grid4{grid-template-columns:repeat(2,1fr)}.grid3{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}.stat-strip{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:620px){.page{padding:12px 10px 30px}.hero{padding:19px 16px}h1{font-size:27px}.topline{display:block}.hero-actions{margin-top:12px}.hero-summary,.grid4{grid-template-columns:1fr 1fr}.stat-strip{grid-template-columns:1fr 1fr}.chart{height:235px}}
+
+/* iPhone / iPad navigation and touch optimisation */
+.mobile-nav{display:none}
+.section[id]{scroll-margin-top:82px}
+@media(max-width:900px){
+  .page{padding-left:max(14px,env(safe-area-inset-left));padding-right:max(14px,env(safe-area-inset-right));padding-bottom:max(34px,env(safe-area-inset-bottom))}
+  .mobile-nav{display:flex;position:sticky;top:0;z-index:30;margin:10px -2px 2px;padding:8px 2px;background:rgba(243,247,250,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);overflow-x:auto;gap:7px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .mobile-nav::-webkit-scrollbar{display:none}
+  .mobile-nav a{flex:0 0 auto;text-decoration:none;color:var(--navy);background:#fff;border:1px solid #D6E1E9;border-radius:999px;min-height:40px;display:inline-flex;align-items:center;padding:0 12px;font-size:12px;font-weight:800;white-space:nowrap}
+  .section-head{align-items:flex-start;flex-direction:column;gap:4px}
+  .panel-head{align-items:flex-start;flex-direction:column;gap:8px}
+  .tabs{width:100%;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:2px}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{flex:0 0 auto;min-height:40px;padding:8px 12px;font-size:12px}
+  .table-wrap{-webkit-overflow-scrolling:touch;position:relative;scrollbar-width:thin}
+  .table-wrap:before{content:"Swipe table →";display:block;position:sticky;left:0;width:max-content;padding:7px 10px 4px;color:#7A8792;font-size:10px;font-weight:800;letter-spacing:.2px;background:#fff;z-index:3}
+  th:first-child,td:first-child{position:sticky;left:0;z-index:2;background:#fff;box-shadow:1px 0 0 #E7EDF1}
+  th:first-child{z-index:4;background:#F5F8FA}
+  dialog{max-height:88dvh;overflow:auto}
+}
+@media(max-width:620px){
+  body{font-size:15px}
+  .page{padding-top:10px}
+  .hero{border-radius:18px;padding:18px 15px 16px}
+  .hero:after{width:230px;height:230px;right:-105px;top:-105px}
+  .kicker{font-size:10px;letter-spacing:1.2px}
+  h1{font-size:23px;line-height:1.12;margin:7px 0}
+  .sub{font-size:12px;line-height:1.4}
+  .hero-actions{display:none}
+  .hero-summary{grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}
+  .hero-kpi{padding:11px 10px;border-radius:12px;min-width:0}
+  .hero-kpi .v{font-size:21px;white-space:nowrap}.hero-kpi .l{font-size:10px}.hero-kpi .d{font-size:10px;line-height:1.25;margin-top:6px}
+  .mobile-nav{margin-top:8px}
+  .section{margin-top:17px}
+  .section h2{font-size:19px;line-height:1.2}.section-note{font-size:11px;line-height:1.35}
+  .grid4{grid-template-columns:1fr 1fr;gap:8px}
+  .grid3,.grid2{gap:9px}
+  .card,.panel,.insight{border-radius:14px;padding:13px}
+  .insight h3,.panel h3{font-size:16px;line-height:1.25}.insight p{font-size:12px;line-height:1.5}
+  .label{font-size:10px}.big{font-size:25px}.unit{font-size:13px}.meta{font-size:11px;line-height:1.45}.delta{font-size:10px;padding:4px 7px}
+  .chart{height:225px}.chart.small{height:210px}
+  .stat-strip{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding:1px 0 5px}
+  .stat-strip::-webkit-scrollbar{display:none}.stat-strip .mini{flex:0 0 126px}
+  .mini{padding:9px}.mini b{font-size:16px}.mini span{font-size:9.5px;line-height:1.25;display:block;margin-top:2px}
+  .benchmark-kpis{display:flex;overflow-x:auto;gap:7px;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:5px}
+  .benchmark-kpis::-webkit-scrollbar{display:none}.benchmark-kpi{flex:0 0 142px;padding:9px}.benchmark-kpi .bv{font-size:17px}.benchmark-kpi .bd{font-size:9.5px}
+  .benchmark-context{display:flex;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:4px}.benchmark-context::-webkit-scrollbar{display:none}.travel-chip{flex:0 0 auto}
+  .callout{padding:11px 12px;font-size:12px;line-height:1.45}
+  table{min-width:640px}#strengthTable{min-width:790px!important}th,td{padding:9px 9px;font-size:11px}
+  .metric-help{font-size:10.5px;line-height:1.5}
+  .footer{font-size:10px;padding-bottom:4px}
+}
+@media(max-width:390px){
+  h1{font-size:21px}
+  .hero-summary{grid-template-columns:1fr 1fr}
+  .hero-kpi .v{font-size:19px}
+  .grid4{grid-template-columns:1fr 1fr}
+  .big{font-size:23px}
+  .card{padding:11px}
+  .chart{height:210px}
+}
+
+@media print{body{background:#fff}.page{max-width:none;padding:0}.hero,.card,.panel,.insight{box-shadow:none}.hero-actions{display:none}}
+</style>
+</head>
+<body>
+<div class="page">
+  <section class="hero">
+    <div class="topline">
+      <div>
+        <div class="kicker">Health & Performance Dashboard · Version 1.2</div>
+        <h1>Mark — performance is improving in strength and body composition, while aerobic capacity and autonomic recovery remain the main gaps.</h1>
+        <div class="sub">Data through 23 Sep 2026 · Excel scope restricted to <b>Weight</b> and <b>Training</b> tabs only.</div>
+      </div>
+      <div class="hero-actions">
+        <button onclick="window.print()">Print / Save PDF</button>
+        <button onclick="document.getElementById('notes').showModal()">Data notes</button>
+      </div>
+    </div>
+    <div class="hero-summary">
+      <div class="hero-kpi"><div class="v">89.6 kg</div><div class="l">Current weight</div><div class="d">7-day tracker average: 89.7 kg</div></div>
+      <div class="hero-kpi"><div class="v">29.4%</div><div class="l">Body fat · InBody 11 Sep</div><div class="d">↓ 1.1 pp vs 28 Aug</div></div>
+      <div class="hero-kpi"><div class="v">36.0 kg</div><div class="l">Skeletal muscle mass</div><div class="d">↑ 0.7 kg vs 28 Aug</div></div>
+      <div class="hero-kpi"><div class="v">61%</div><div class="l">September recovery</div><div class="d">↑ from 47% in August</div></div>
+    </div>
+  </section>
+
+  <nav class="mobile-nav" aria-label="Dashboard sections">
+    <a href="#overview">Overview</a>
+    <a href="#scorecard">Scorecard</a>
+    <a href="#composition">Body</a>
+    <a href="#whoop">WHOOP</a>
+    <a href="#training">Training</a>
+    <a href="#strengthBenchmarks">Strength</a>
+    <a href="#details">Details</a>
+    <a href="#focus">6-week focus</a>
+  </nav>
+
+  <section class="section" id="overview">
+    <div class="section-head"><h2>Executive readout</h2><div class="section-note">What happened · why it matters · what to do</div></div>
+    <div class="grid3">
+      <div class="insight"><div class="tag good">Positive signal</div><h3>Body recomposition has turned positive since 28 Aug</h3><p>In 14 days, InBody shows skeletal muscle +0.7 kg, body fat mass −1.2 kg, body-fat percentage −1.1 pp and visceral fat area −5.0 cm², while scale weight fell only 0.4 kg. Composition is therefore more informative than scale weight alone.</p></div>
+      <div class="insight"><div class="tag attn">Watch</div><h3>Recovery improved in September, but RHR / HRV have not followed yet</h3><p>Recovery rose from 47% in August to 61% in September and sleep reached 76%. However, RHR is 76 bpm and HRV 19 ms. The 6-month averages remain weaker than the prior six months.</p></div>
+      <div class="insight"><div class="tag focus">Priority</div><h3>Rebuild aerobic stimulus without sacrificing the strength rebound</h3><p>VO₂ max moved from 43 in April to 38 in September and steps from 9,734 to 6,719. Gym sessions recovered sharply: 2 in July, 12 in August and 9 month-to-date in September. Maintain strength and add controlled aerobic work.</p></div>
+    </div>
+  </section>
+
+  <section class="section" id="scorecard">
+    <div class="section-head"><h2>Current scorecard</h2><div class="section-note">Personal targets previously set; WHOOP values use the supplied 6-month trend screenshots</div></div>
+    <div class="grid4">
+      <div class="card"><div class="label">Weight</div><div class="big">89.6 <span class="unit">kg</span></div><div class="meta">Goal: 84 kg · gap 5.6 kg</div><div class="progress"><span style="width:64%"></span></div><div class="delta watch">Weekly trend: 89.7 kg</div></div>
+      <div class="card"><div class="label">Waist</div><div class="big">106 <span class="unit">cm</span></div><div class="meta">Last spreadsheet reading: 11 Sep · goal 95 cm</div><div class="progress"><span style="width:72%"></span></div><div class="delta watch">11 cm above goal</div></div>
+      <div class="card"><div class="label">Body fat</div><div class="big">29.4<span class="unit">%</span></div><div class="meta">Goal: &lt;25% · latest InBody 11 Sep</div><div class="progress"><span style="width:76%"></span></div><div class="delta pos">−1.1 pp in 14 days</div></div>
+      <div class="card"><div class="label">Training frequency</div><div class="big">12.1 <span class="unit">/mo</span></div><div class="meta">2026 average structured sessions · minimum 16 / target 21</div><div class="progress"><span style="width:58%"></span></div><div class="delta watch">Below tracker minimum</div></div>
+    </div>
+  </section>
+
+  <section class="section" id="composition">
+    <div class="grid2">
+      <div class="panel">
+        <div class="panel-head"><div><h3>Weight trend · 6 months</h3><div class="meta">Daily measurements with target reference</div></div></div>
+        <div id="weightChart" class="chart"></div>
+        <div class="stat-strip">
+          <div class="mini"><b>86.8</b><span>28 Mar</span></div>
+          <div class="mini"><b>90.5</b><span>6M high · 17 Jul</span></div>
+          <div class="mini"><b>89.6</b><span>23 Sep</span></div>
+          <div class="mini"><b>89.7</b><span>Latest weekly avg</span></div>
+          <div class="mini"><b>84.0</b><span>Goal</span></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head">
+          <div><h3>InBody composition</h3><div class="meta">Select the metric to compare the three scans</div></div>
+          <div class="tabs" id="bodyTabs"></div>
+        </div>
+        <div id="bodyChart" class="chart"></div>
+        <div class="callout"><b>Most recent change (28 Aug → 11 Sep):</b> weight −0.4 kg · skeletal muscle +0.7 kg · body fat mass −1.2 kg · PBF −1.1 pp · visceral fat area −5.0 cm².</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="whoop">
+    <div class="section-head"><h2>WHOOP · 6-month healthspan & recovery signals</h2><div class="section-note">28 Mar – 23 Sep 2026</div></div>
+    <div class="grid4" style="margin-bottom:12px">
+      <div class="card soft"><div class="label">Pace of aging</div><div class="big">0.8<span class="unit">× latest</span></div><div class="meta">6M average 1.2× · +71% vs prior 6M</div><div class="delta pos">Latest reading below 1.0×</div></div>
+      <div class="card soft"><div class="label">WHOOP age</div><div class="big">48.2 <span class="unit">latest</span></div><div class="meta">Chronological age shown by WHOOP: 46.6 · 6M average 45.7</div><div class="delta watch">Latest > chronological age</div></div>
+      <div class="card soft"><div class="label">Recovery</div><div class="big">61<span class="unit">% Sep</span></div><div class="meta">6M average 54% · prior 6M average 60%</div><div class="delta pos">September rebound</div></div>
+      <div class="card soft"><div class="label">VO₂ max</div><div class="big">38 <span class="unit">latest</span></div><div class="meta">6M average 41 · April 43</div><div class="delta watch">−5 vs April</div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-head">
+        <div><h3 id="whoopTitle">Recovery</h3><div id="whoopMeta" class="meta"></div></div>
+        <div class="tabs" id="whoopTabs"></div>
+      </div>
+      <div id="whoopChart" class="chart"></div>
+      <div id="whoopStrip" class="stat-strip"></div>
+    </div>
+  </section>
+
+  <section class="section" id="training">
+    <div class="section-head"><h2>Training execution · 2026</h2><div class="section-note">September is month-to-date through 23 Sep</div></div>
+    <div class="grid2">
+      <div class="panel">
+        <div class="panel-head"><div><h3>Structured sessions per month</h3><div class="meta">Minimum 16 · target 21 from the Training tab</div></div></div>
+        <div id="trainingChart" class="chart"></div>
+        <div class="legend"><span class="lg"><span class="sw" style="background:var(--blue)"></span>Gym</span><span class="lg"><span class="sw" style="background:var(--purple)"></span>Running</span><span class="lg"><span class="sw" style="background:var(--teal)"></span>Other structured</span></div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><div><h3>2026 activity mix</h3><div class="meta">YTD totals from the Training tab</div></div></div>
+        <div class="grid2" style="gap:8px">
+          <div class="mini"><b>109</b><span>Structured workouts</span></div>
+          <div class="mini"><b>68</b><span>Gym sessions</span></div>
+          <div class="mini"><b>31</b><span>Runs</span></div>
+          <div class="mini"><b>202.9 km</b><span>Running</span></div>
+          <div class="mini"><b>5</b><span>Spin sessions</span></div>
+          <div class="mini"><b>4 / 4.25 km</b><span>Swims / distance</span></div>
+          <div class="mini"><b>25</b><span>Recorded walks</span></div>
+          <div class="mini"><b>74.2 km</b><span>Walking</span></div>
+        </div>
+        <div class="callout" style="margin-top:12px"><b>Pattern:</b> the low point was July (2 structured sessions). August recovered to 15 and September is already at 11 by the 23rd. Strength is now the most consistent training pillar.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="strengthBenchmarks">
+    <div class="section-head"><h2>Strength benchmarks · progressive overload</h2><div class="section-note">Training Progress tracker · DB chest press is treated as flat · DB loads are combined totals</div></div>
+    <div class="benchmark-layout">
+      <div class="panel">
+        <div class="panel-head">
+          <div><h3 id="strengthTitle">DB chest press</h3><div id="strengthMeta" class="meta"></div></div>
+          <div class="tabs" id="strengthTabs"></div>
+        </div>
+        <div id="strengthKpis" class="benchmark-kpis"></div>
+        <div id="strengthChart" class="chart"></div>
+        <div id="strengthContext" class="benchmark-context"></div>
+        <div id="strengthNote" class="benchmark-note"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><div><h3>How the benchmark is calculated</h3><div class="meta">Comparable-session metrics, not a replacement for technique or RIR</div></div></div>
+        <div class="metric-help">
+          <b>Load progression</b> = change in top working load versus the first comparable benchmark.<br>
+          <b>Rep progression</b> = change in best reps achieved at that session's top load.<br>
+          <b>Estimated 1RM</b> = Epley estimate from the best set: load × (1 + reps ÷ 30).<br>
+          <b>Volume</b> = Σ(load × reps); unilateral leg work counts both sides when explicitly recorded.<br>
+          <b>Strength index</b> = estimated 1RM ÷ first comparable benchmark × 100.
+        </div>
+        <div class="callout" style="margin-top:12px"><b>Travel handling:</b> travel-limited sessions stay visible, but are excluded from progression KPIs when equipment clearly capped the load. Different leg/squat variants are not compared against each other.</div>
+      </div>
+    </div>
+    <div class="panel" style="margin-top:12px">
+      <div class="panel-head"><div><h3 id="strengthTableTitle">Benchmark history</h3><div class="meta">Source: previously shared Training Progress screenshots / logs</div></div></div>
+      <div class="table-wrap"><table id="strengthTable" style="min-width:900px">
+        <thead><tr><th>Date</th><th>Variant</th><th>Weight</th><th>Reps</th><th>Sets</th><th>Est. 1RM</th><th>Volume</th><th>Strength index</th><th>Context</th></tr></thead>
+        <tbody></tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <section class="section" id="details">
+    <div class="grid2">
+      <div class="panel">
+        <div class="panel-head"><div><h3>InBody scan detail</h3><div class="meta">Original scans supplied with this dashboard</div></div></div>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Date</th><th>Weight kg</th><th>SMM kg</th><th>BFM kg</th><th>PBF %</th><th>VFA cm²</th><th>WHR</th><th>Score</th></tr></thead>
+          <tbody>
+            <tr><td>05 Dec 2025</td><td>84.2</td><td>35.7</td><td>21.4</td><td>25.4</td><td>91.5</td><td>0.95</td><td>69</td></tr>
+            <tr><td>28 Aug 2026</td><td>89.7</td><td>35.3</td><td>27.4</td><td>30.5</td><td>119.6</td><td>1.00</td><td>62</td></tr>
+            <tr><td>11 Sep 2026</td><td class="goodcell">89.3</td><td class="goodcell">36.0</td><td class="goodcell">26.2</td><td class="goodcell">29.4</td><td class="goodcell">114.6</td><td>1.02</td><td class="goodcell">64</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><div><h3>WHOOP September vs August</h3><div class="meta">Recent direction matters more than the 6-month average alone</div></div></div>
+        <div class="table-wrap"><table style="min-width:520px">
+          <thead><tr><th>Metric</th><th>Aug</th><th>Sep</th><th>Direction</th></tr></thead>
+          <tbody>
+            <tr><td>Recovery</td><td>47%</td><td>61%</td><td class="goodcell">Improved</td></tr>
+            <tr><td>Sleep performance</td><td>75%</td><td>76%</td><td class="goodcell">Improved</td></tr>
+            <tr><td>RHR</td><td>73 bpm</td><td>76 bpm</td><td class="warncell">Worse</td></tr>
+            <tr><td>HRV</td><td>19 ms</td><td>19 ms</td><td>Flat</td></tr>
+            <tr><td>VO₂ max</td><td>37</td><td>38</td><td class="goodcell">Slight recovery</td></tr>
+            <tr><td>Steps</td><td>6,665</td><td>6,719</td><td class="goodcell">Slight recovery</td></tr>
+            <tr><td>Strength volume</td><td>5,564 kg</td><td>8,326 kg</td><td class="goodcell">Strong recovery</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="focus">
+    <div class="section-head"><h2>Focus for the next 6 weeks</h2><div class="section-note">Keep it simple; protect the gains already appearing</div></div>
+    <div class="grid3">
+      <div class="card"><div class="label">1 · Strength</div><div class="big">3× <span class="unit">/ week</span></div><div class="meta">Maintain the current rebound and progressive overload. The body-composition data supports staying consistent rather than adding more volume aggressively.</div></div>
+      <div class="card"><div class="label">2 · Aerobic capacity</div><div class="big">1× <span class="unit">VO₂ session</span></div><div class="meta">Keep the weekly bike VO₂ session and use easy walking for additional aerobic work. The aim is to reverse the VO₂ / steps decline without forcing extra running.</div></div>
+      <div class="card"><div class="label">3 · Measurement</div><div class="big">Trend <span class="unit">&gt; single reading</span></div><div class="meta">Track weekly-average weight, waist and fortnightly InBody. Judge progress primarily on fat loss with preserved or rising muscle mass.</div></div>
+    </div>
+  </section>
+
+  <div class="footer">
+    <b>V1.2 data sources:</b> uploaded Excel workbook — <b>Weight</b> and <b>Training</b> tabs only; WHOOP 6-month trend screenshots; InBody result sheets dated 05 Dec 2025, 28 Aug 2026 and 11 Sep 2026; previously shared Training Progress screenshots / logs; and the interactive family calendar for travel context. The dashboard is for personal performance tracking and is not a medical diagnosis. V1.2 adds iPhone/iPad responsive layout, touch-friendly navigation and Home Screen web-app metadata.
+  </div>
+</div>
+
+<dialog id="notes"><div class="modal">
+  <h3>Data notes</h3>
+  <ul>
+    <li>Excel analysis was deliberately restricted to the first two tabs: Weight and Training.</li>
+    <li>WHOOP monthly values were transcribed from the supplied 6-month screenshots captured on 23 Sep 2026.</li>
+    <li>September Training is month-to-date; the source sheet uses a month-end bucket but the dashboard labels it to 23 Sep.</li>
+    <li>The latest waist available in the spreadsheet is 106 cm on 11 Sep 2026.</li>
+    <li>Pace of Aging and WHOOP Age are shown as headline indicators only because the screenshot does not provide exact monthly values for every point.</li>
+    <li>Strength benchmarks were transcribed from previously shared Training Progress screenshots / logs. DB chest press is always classified as flat and dumbbell loads are treated as the combined load across both dumbbells.</li>
+    <li>Estimated 1RM uses the Epley formula. Incomplete sets are shown but excluded from volume / strength-index calculations.</li>
+    <li>Near-term travel context is linked to the training view so equipment-limited or travel-affected sessions are interpreted correctly.</li>
+  </ul>
+  <div class="close-row"><button onclick="document.getElementById('notes').close()">Close</button></div>
+</div></dialog>
+
+<script>
+const D={"asOf":"2026-09-23","weight6m":[{"date":"2026-03-28","value":86.8},{"date":"2026-03-29","value":86.9},{"date":"2026-03-30","value":86.9},{"date":"2026-03-31","value":86.3},{"date":"2026-04-01","value":86.3},{"date":"2026-04-02","value":86.6},{"date":"2026-04-03","value":86.3},{"date":"2026-04-09","value":86.4},{"date":"2026-04-10","value":85.7},{"date":"2026-04-11","value":86.6},{"date":"2026-04-13","value":88.3},{"date":"2026-04-14","value":87.3},{"date":"2026-04-15","value":87.1},{"date":"2026-04-16","value":86.3},{"date":"2026-04-17","value":86.3},{"date":"2026-04-26","value":87.2},{"date":"2026-04-27","value":87.3},{"date":"2026-04-28","value":87.6},{"date":"2026-04-29","value":86.9},{"date":"2026-05-01","value":88.1},{"date":"2026-05-05","value":88.7},{"date":"2026-05-06","value":88.4},{"date":"2026-05-07","value":87.8},{"date":"2026-05-08","value":87.4},{"date":"2026-05-10","value":87.3},{"date":"2026-05-11","value":87.6},{"date":"2026-05-22","value":88.5},{"date":"2026-05-24","value":88.9},{"date":"2026-05-27","value":88.3},{"date":"2026-05-28","value":88.3},{"date":"2026-05-29","value":88.2},{"date":"2026-05-30","value":87.6},{"date":"2026-05-31","value":88.1},{"date":"2026-06-08","value":87.1},{"date":"2026-06-11","value":87.5},{"date":"2026-06-15","value":87.0},{"date":"2026-06-16","value":86.9},{"date":"2026-06-17","value":87.6},{"date":"2026-06-18","value":87.5},{"date":"2026-06-20","value":87.8},{"date":"2026-06-21","value":87.1},{"date":"2026-07-17","value":90.5},{"date":"2026-07-18","value":89.8},{"date":"2026-07-19","value":90.4},{"date":"2026-07-20","value":90.3},{"date":"2026-07-21","value":90.1},{"date":"2026-07-22","value":90.1},{"date":"2026-07-23","value":89.6},{"date":"2026-07-24","value":89.2},{"date":"2026-07-26","value":89.3},{"date":"2026-08-03","value":88.5},{"date":"2026-08-04","value":88.4},{"date":"2026-08-05","value":88.4},{"date":"2026-08-06","value":88.9},{"date":"2026-08-07","value":89.1},{"date":"2026-08-08","value":89.1},{"date":"2026-08-09","value":88.3},{"date":"2026-08-10","value":87.9},{"date":"2026-08-11","value":87.9},{"date":"2026-08-12","value":86.6},{"date":"2026-08-13","value":86.5},{"date":"2026-08-14","value":88.1},{"date":"2026-08-15","value":88.4},{"date":"2026-08-16","value":88.2},{"date":"2026-08-17","value":87.9},{"date":"2026-08-18","value":87.9},{"date":"2026-08-19","value":88.2},{"date":"2026-08-20","value":89.0},{"date":"2026-08-21","value":88.3},{"date":"2026-08-22","value":87.4},{"date":"2026-08-23","value":87.4},{"date":"2026-08-24","value":88.9},{"date":"2026-08-25","value":88.8},{"date":"2026-08-26","value":88.3},{"date":"2026-08-27","value":87.8},{"date":"2026-08-28","value":88.0},{"date":"2026-08-29","value":88.7},{"date":"2026-08-31","value":89.0},{"date":"2026-09-01","value":88.9},{"date":"2026-09-02","value":88.6},{"date":"2026-09-03","value":88.1},{"date":"2026-09-04","value":88.5},{"date":"2026-09-07","value":88.6},{"date":"2026-09-08","value":88.8},{"date":"2026-09-09","value":89.4},{"date":"2026-09-10","value":89.3},{"date":"2026-09-11","value":88.8},{"date":"2026-09-12","value":88.7},{"date":"2026-09-13","value":88.9},{"date":"2026-09-19","value":89.3},{"date":"2026-09-20","value":89.9},{"date":"2026-09-21","value":89.9},{"date":"2026-09-22","value":89.6},{"date":"2026-09-23","value":89.6}],"weeklyWeight6m":[{"date":"2026-03-30","value":86.48},{"date":"2026-04-06","value":86.23},{"date":"2026-04-13","value":87.06},{"date":"2026-04-20","value":87.2},{"date":"2026-04-27","value":87.48},{"date":"2026-05-04","value":87.92},{"date":"2026-05-11","value":87.6},{"date":"2026-05-18","value":88.7},{"date":"2026-05-25","value":88.1},{"date":"2026-06-08","value":87.3},{"date":"2026-06-15","value":87.32},{"date":"2026-07-13","value":90.23},{"date":"2026-07-20","value":89.77},{"date":"2026-08-03","value":88.67},{"date":"2026-08-10","value":87.66},{"date":"2026-08-17","value":88.01},{"date":"2026-08-24","value":88.42},{"date":"2026-08-31","value":88.62},{"date":"2026-09-07","value":88.93},{"date":"2026-09-14","value":89.6},{"date":"2026-09-21","value":89.7}],"waistRecent":[{"date":"2026-08-31","value":107.0},{"date":"2026-09-01","value":107.0},{"date":"2026-09-03","value":107.0},{"date":"2026-09-04","value":106.0},{"date":"2026-09-07","value":107.0},{"date":"2026-09-09","value":107.0},{"date":"2026-09-11","value":106.0}],"training":[{"month":"Jan","weight":86,"gym":5,"gymAvgMin":54,"spin":0,"spinAvgMin":null,"hiit":0,"running":10,"runKm":73.34,"hiking":0,"hikeKm":0,"swimming":1,"swimM":1000,"walking":4,"walkKm":13.87,"structured":16},{"month":"Feb","weight":86.7,"gym":10,"gymAvgMin":50,"spin":0,"spinAvgMin":null,"hiit":0,"running":4,"runKm":21.1,"hiking":0,"hikeKm":0,"swimming":3,"swimM":3250,"walking":1,"walkKm":2.2,"structured":17},{"month":"Mar","weight":86,"gym":8,"gymAvgMin":43,"spin":0,"spinAvgMin":null,"hiit":0,"running":8,"runKm":49.03,"hiking":0,"hikeKm":0,"swimming":0,"swimM":0,"walking":1,"walkKm":4.54,"structured":16},{"month":"Apr","weight":86.8,"gym":7,"gymAvgMin":46,"spin":0,"spinAvgMin":null,"hiit":0,"running":6,"runKm":48.22,"hiking":1,"hikeKm":6.18,"swimming":0,"swimM":0,"walking":3,"walkKm":10.77,"structured":14},{"month":"May","weight":88.1,"gym":9,"gymAvgMin":46.3,"spin":0,"spinAvgMin":null,"hiit":0,"running":0,"runKm":0,"hiking":0,"hikeKm":0,"swimming":0,"swimM":0,"walking":7,"walkKm":19.5,"structured":9},{"month":"Jun","weight":87.3,"gym":6,"gymAvgMin":46,"spin":0,"spinAvgMin":null,"hiit":0,"running":3,"runKm":11.2,"hiking":0,"hikeKm":0,"swimming":0,"swimM":0,"walking":1,"walkKm":1.5,"structured":9},{"month":"Jul","weight":89.9,"gym":2,"gymAvgMin":37,"spin":0,"spinAvgMin":null,"hiit":0,"running":0,"runKm":0,"hiking":0,"hikeKm":0,"swimming":0,"swimM":0,"walking":4,"walkKm":6.5,"structured":2},{"month":"Aug","weight":88.2,"gym":12,"gymAvgMin":47,"spin":3,"spinAvgMin":32,"hiit":0,"running":0,"runKm":0,"hiking":0,"hikeKm":0,"swimming":0,"swimM":0,"walking":1,"walkKm":3.9,"structured":15},{"month":"Sep","weight":89.06,"gym":9,"gymAvgMin":41,"spin":2,"spinAvgMin":34,"hiit":0,"running":0,"runKm":0,"hiking":0,"hikeKm":0,"swimming":0,"swimM":0,"walking":3,"walkKm":11.45,"structured":11}],"trainingTotals":{"structured":109,"gym":68,"running":31,"runKm":202.9,"spin":5,"swimming":4,"swimM":4250,"walking":25,"walkKm":74.2,"hiking":1,"hikeKm":6.2,"avgStructured":12.1},"whoop":{"recovery":{"label":"Recovery","unit":"%","avg":54,"priorDelta":-10,"current":61,"monthly":[56,51,58,52,47,61],"goodHigh":true},"sleep":{"label":"Sleep performance","unit":"%","avg":73,"priorDelta":-4,"current":76,"monthly":[72,73,70,74,75,76],"goodHigh":true},"rhr":{"label":"Resting heart rate","unit":" bpm","avg":73,"priorDelta":6,"current":76,"monthly":[68,71,75,73,73,76],"goodHigh":false},"hrv":{"label":"Heart rate variability","unit":" ms","avg":20,"priorDelta":-9,"current":19,"monthly":[21,18,18,25,19,19],"goodHigh":true},"vo2":{"label":"VO\u2082 max","unit":" mL/kg/min","avg":41,"priorDelta":-2,"current":38,"monthly":[43,42,43,41,37,38],"goodHigh":true},"steps":{"label":"Steps","unit":"","avg":7803,"priorDelta":-19,"current":6719,"monthly":[9734,7417,6879,9332,6665,6719],"goodHigh":true},"volume":{"label":"Strength volume load","unit":" kg","avg":8023,"priorDelta":-7,"current":8326,"monthly":[7264,11607,8114,6830,5564,8326],"goodHigh":true},"pace":{"label":"Pace of aging","unit":"\u00d7","avg":1.2,"priorDelta":71,"current":0.8,"monthly":null,"goodHigh":false},"whoopAge":{"label":"WHOOP age","unit":" years","avg":45.7,"priorDelta":3,"current":48.2,"monthly":null,"goodHigh":false}},"whoopMonths":["Apr","May","Jun","Jul","Aug","Sep"],"inbody":[{"date":"2025-12-05","weight":84.2,"smm":35.7,"bfm":21.4,"pbf":25.4,"vfa":91.5,"whr":0.95,"score":69},{"date":"2026-08-28","weight":89.7,"smm":35.3,"bfm":27.4,"pbf":30.5,"vfa":119.6,"whr":1.0,"score":62},{"date":"2026-09-11","weight":89.3,"smm":36.0,"bfm":26.2,"pbf":29.4,"vfa":114.6,"whr":1.02,"score":64}],"targets":{"weight":84,"waist":95,"pbf":25,"trainingMin":16,"trainingTarget":21},"latest":{"weight":89.6,"weeklyAvg":89.7,"waist":106,"waistDate":"2026-09-11","pbf":29.4,"smm":36.0,"vfa":114.6}};
+
+const STRENGTH={
+  chest:{label:'DB chest press',meta:'All DB chest press entries are treated as flat. Dumbbell loads are combined totals.',entries:[
+    {date:'2026-08-11',variant:'DB chest press',sets:[{w:40,r:10},{w:44,r:10},{w:44,r:10}],context:'Home'},
+    {date:'2026-08-20',variant:'DB chest press',sets:[{w:44,r:8},{w:44,r:8},{w:44,r:8},{w:44,r:8}],context:'Home'},
+    {date:'2026-09-03',variant:'DB chest press',sets:[{w:44,r:10},{w:48,r:10},{w:48,r:8},{w:48,r:8}],context:'Home'},
+    {date:'2026-09-17',variant:'DB chest press',sets:[{w:40,r:8},{w:40,r:8},{w:40,r:9}],context:'Algeria · hotel DB ceiling',travel:true,limited:true}
+  ]},
+  row:{label:'Seated row',meta:'Same movement tracked across five comparable sessions.',entries:[
+    {date:'2026-08-18',variant:'Seated row',sets:[{w:80,r:8},{w:85,r:8},{w:85,r:8},{w:85,r:8}],context:'Home'},
+    {date:'2026-08-25',variant:'Seated row',sets:[{w:85,r:8},{w:85,r:8},{w:85,r:8},{w:85,r:8}],context:'Home'},
+    {date:'2026-09-01',variant:'Seated row',sets:[{w:85,r:10},{w:90,r:8},{w:90,r:8},{w:90,r:10}],context:'Home'},
+    {date:'2026-09-08',variant:'Seated row',sets:[{w:90,r:8},{w:90,r:8},{w:90,r:8},{w:90,r:10}],context:'Home'},
+    {date:'2026-09-22',variant:'Seated row',sets:[{w:90,r:10},{w:90,r:10},{w:90,r:10},{w:90,r:10}],context:'Home'}
+  ]},
+  pulldown:{label:'Lat pulldown',meta:'Wide + narrow grips are combined for session volume; load / e1RM use the best set.',entries:[
+    {date:'2026-08-18',variant:'Wide + narrow',sets:[{w:45,r:10},{w:45,r:10},{w:45,r:10},{w:45,r:10},{w:45,r:10},{w:45,r:10},{w:45,r:10},{w:45,r:10}],setsLabel:'8 (4 wide + 4 narrow)',repsLabel:'10 × 8',context:'Home'},
+    {date:'2026-08-25',variant:'Wide + narrow',sets:[{w:45,r:10},{w:45,r:10},{w:45,r:10},{w:45,r:10},{w:45,r:10},{w:45,r:10}],setsLabel:'6 (3 wide + 3 narrow)',repsLabel:'10 × 6',context:'Home'},
+    {date:'2026-09-01',variant:'Wide + narrow',sets:[{w:45,r:10},{w:45,r:10},{w:45,r:10},{w:45,r:10},{w:45,r:10},{w:45,r:10}],setsLabel:'6 (3 wide + 3 narrow)',repsLabel:'10 × 6',context:'Home'},
+    {date:'2026-09-08',variant:'Wide + narrow',sets:[{w:50,r:8},{w:50,r:8},{w:50,r:10},{w:50,r:8},{w:50,r:8},{w:50,r:10}],setsLabel:'6 (3 wide + 3 narrow)',repsLabel:'8 / 8 / 10 × 2 grips',context:'Home'},
+    {date:'2026-09-22',variant:'Wide + narrow',sets:[{w:50,r:10},{w:50,r:10},{w:50,r:10},{w:50,r:10},{w:50,r:10},{w:50,r:10}],setsLabel:'6 (3 wide + 3 narrow)',repsLabel:'10 × 6',context:'Home'}
+  ]},
+  legs:{label:'Leg press / squat variant',meta:'Progression KPI uses Bulgarian split squat only; other variants remain visible but are not cross-compared.',focusVariant:'Bulgarian split squat',entries:[
+    {date:'2026-08-13',variant:'Bulgarian split squat',sets:[{w:10,r:10,sideFactor:2},{w:10,r:10,sideFactor:2},{w:10,r:10,sideFactor:2}],repsLabel:'10 / side',setsLabel:'3',context:'Home'},
+    {date:'2026-08-22',variant:'Bulgarian split squat',sets:[{w:10,r:10,sideFactor:2},{w:10,r:12,sideFactor:2},{w:10,r:12,sideFactor:2}],repsLabel:'10 / 12 / 12 per side',setsLabel:'3',context:'Home'},
+    {date:'2026-08-22',variant:'Raised-heel goblet squat',sets:[{w:16,r:10},{w:16,r:10},{w:16,r:10}],context:'Home'},
+    {date:'2026-08-29',variant:'Hack squat',sets:[{w:15,r:12},{w:15,r:12},{w:15,r:12},{w:15,r:12}],context:'Home'},
+    {date:'2026-08-29',variant:'Raised-heel goblet squat',sets:[{w:16,r:12},{w:16,r:12},{w:16,r:12},{w:16,r:12}],context:'Home'},
+    {date:'2026-08-29',variant:'Bulgarian split squat',sets:[{w:12,r:12,sideFactor:2},{w:12,r:12,sideFactor:2},{w:12,r:12,sideFactor:2},{w:12,r:12,sideFactor:2}],repsLabel:'12 / side',setsLabel:'4',context:'Home'},
+    {date:'2026-09-16',variant:'Leg press',sets:[{w:50,r:null},{w:50,r:null},{w:70,r:15},{w:80,r:15}],repsLabel:'— / — / 15 / 15',setsLabel:'4',context:'Algeria · hotel gym · first two reps not preserved',travel:true,incomplete:true}
+  ]},
+  curl:{label:'EZ-bar curl',meta:'EZ-bar only; hammer curls, machine curls and barbell curls are excluded.',entries:[
+    {date:'2026-08-18',variant:'EZ-bar curl',sets:[{w:18,r:8},{w:23,r:6},{w:23,r:7},{w:23,r:5}],context:'Home'},
+    {date:'2026-08-25',variant:'EZ-bar curl',sets:[{w:23,r:8},{w:23,r:8},{w:23,r:8},{w:23,r:7}],context:'Home'},
+    {date:'2026-09-01',variant:'EZ-bar curl',sets:[{w:23,r:10},{w:23,r:10},{w:23,r:10},{w:23,r:10}],context:'Home'},
+    {date:'2026-09-08',variant:'EZ-bar curl',sets:[{w:23,r:8},{w:23,r:10},{w:23,r:9},{w:23,r:10}],context:'Home'},
+    {date:'2026-09-22',variant:'EZ-bar curl',sets:[{w:23,r:10},{w:23,r:10},{w:23,r:10},{w:23,r:8}],context:'Home'}
+  ]}
+};
+const TRAINING_TRAVEL=[
+  {start:'2026-09-15',end:'2026-09-18',label:'Algeria',kind:'current'},
+  {start:'2026-09-27',end:'2026-10-04',label:'Morocco',kind:'future'},
+  {start:'2026-10-11',end:'2026-10-15',label:'Kenya Xceed',kind:'future'}
+];
+
+const $=s=>document.querySelector(s);
+const fmt=(v,d=0)=>Number(v).toLocaleString(undefined,{minimumFractionDigits:d,maximumFractionDigits:d});
+function svgEl(tag,attrs={}){const e=document.createElementNS('http://www.w3.org/2000/svg',tag);Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v));return e}
+function clear(el){while(el.firstChild)el.removeChild(el.firstChild)}
+function lineChart(el, points, opts={}){
+  clear(el); const W=900,H=260,p={l:52,r:20,t:18,b:34}, iw=W-p.l-p.r, ih=H-p.t-p.b;
+  const svg=svgEl('svg',{viewBox:`0 0 ${W} ${H}`,preserveAspectRatio:'none'}); el.appendChild(svg);
+  const xs=points.map(x=>new Date(x.x).getTime()), ys=points.map(x=>x.y);
+  const xmin=Math.min(...xs),xmax=Math.max(...xs); let ymin=opts.ymin??Math.min(...ys), ymax=opts.ymax??Math.max(...ys);
+  const pad=(ymax-ymin||1)*.12; if(opts.ymin==null)ymin-=pad;if(opts.ymax==null)ymax+=pad;
+  const X=x=>p.l+(x-xmin)/(xmax-xmin||1)*iw, Y=y=>p.t+(ymax-y)/(ymax-ymin||1)*ih;
+  for(let i=0;i<5;i++){const yv=ymin+(ymax-ymin)*i/4, yy=Y(yv);svg.appendChild(svgEl('line',{x1:p.l,x2:W-p.r,y1:yy,y2:yy,class:'gridline'}));const t=svgEl('text',{x:p.l-8,y:yy+4,'text-anchor':'end',class:'axistext'});t.textContent=opts.yFmt?opts.yFmt(yv):fmt(yv,1);svg.appendChild(t)}
+  const months=opts.monthTicks||[];months.forEach(m=>{const tx=X(new Date(m.date).getTime());const t=svgEl('text',{x:tx,y:H-10,'text-anchor':'middle',class:'axistext'});t.textContent=m.label;svg.appendChild(t)});
+  if(opts.ref!=null){const yy=Y(opts.ref);svg.appendChild(svgEl('line',{x1:p.l,x2:W-p.r,y1:yy,y2:yy,class:'ref-line'}));const t=svgEl('text',{x:W-p.r-2,y:yy-5,'text-anchor':'end',class:'ref-label'});t.textContent=opts.refLabel||opts.ref;svg.appendChild(t)}
+  let d='';points.forEach((pt,i)=>{const x=X(new Date(pt.x).getTime()),y=Y(pt.y);d+=(i?' L':'M')+x+' '+y});
+  svg.appendChild(svgEl('path',{d,class:'line-main'}));
+  points.forEach((pt,i)=>{if(i===points.length-1 || opts.showDots){const c=svgEl('circle',{cx:X(new Date(pt.x).getTime()),cy:Y(pt.y),r:i===points.length-1?5:3,class:'dot-main'});const tt=svgEl('title');tt.textContent=`${pt.label||pt.x}: ${opts.tooltipFmt?opts.tooltipFmt(pt.y):pt.y}`;c.appendChild(tt);svg.appendChild(c)}});
+}
+function simpleLineCategories(el,labels,vals,opts={}){
+  const pts=vals.map((y,i)=>({x:new Date(2026,3+i,15).toISOString(),y,label:labels[i]}));
+  lineChart(el,pts,{...opts,monthTicks:labels.map((l,i)=>({date:new Date(2026,3+i,15).toISOString(),label:l}))});
+}
+function barChart(el, rows){
+  clear(el); const W=900,H=260,p={l:45,r:18,t:16,b:34},iw=W-p.l-p.r,ih=H-p.t-p.b, max=24;
+  const svg=svgEl('svg',{viewBox:`0 0 ${W} ${H}`,preserveAspectRatio:'none'});el.appendChild(svg);
+  const Y=v=>p.t+(max-v)/max*ih;
+  [0,8,16,21,24].forEach(v=>{const y=Y(v);svg.appendChild(svgEl('line',{x1:p.l,x2:W-p.r,y1:y,y2:y,class:v===16||v===21?'ref-line':'gridline'}));const t=svgEl('text',{x:p.l-7,y:y+4,'text-anchor':'end',class:'axistext'});t.textContent=v;svg.appendChild(t);if(v===16||v===21){const r=svgEl('text',{x:W-p.r-2,y:y-4,'text-anchor':'end',class:'ref-label'});r.textContent=v===16?'minimum 16':'target 21';svg.appendChild(r)}});
+  const bw=iw/rows.length*.62;
+  rows.forEach((r,i)=>{const x=p.l+(i+.5)*iw/rows.length-bw/2;let y0=Y(0);const segs=[['gym','bar'],['running','bar2'],['other','bar3']];let cum=0;segs.forEach(([key,cls])=>{const val=key==='other'?(r.spin+r.hiit+r.hiking+r.swimming):r[key];if(!val)return;const y1=Y(cum+val),h=y0-y1;const rect=svgEl('rect',{x,y:y1,width:bw,height:h,rx:3,class:cls});const tt=svgEl('title');tt.textContent=`${r.month} · ${key}: ${val}`;rect.appendChild(tt);svg.appendChild(rect);cum+=val;y0=y1});const t=svgEl('text',{x:x+bw/2,y:H-10,'text-anchor':'middle',class:'axistext'});t.textContent=r.month;svg.appendChild(t);const n=svgEl('text',{x:x+bw/2,y:Y(cum)-6,'text-anchor':'middle',class:'ref-label'});n.textContent=cum;svg.appendChild(n)});
+}
+
+function pctDelta(a,b){if(a==null||b==null||b===0)return null;return (a/b-1)*100}
+function epley(w,r){return w*(1+r/30)}
+function entryMetrics(e){
+  const valid=(e.sets||[]).filter(s=>Number.isFinite(s.w)&&Number.isFinite(s.r));
+  const loads=(e.sets||[]).filter(s=>Number.isFinite(s.w)).map(s=>s.w);
+  const topLoad=loads.length?Math.max(...loads):null;
+  const topValid=valid.filter(s=>s.w===topLoad);
+  const topReps=topValid.length?Math.max(...topValid.map(s=>s.r)):null;
+  if(!valid.length||e.incomplete)return {topLoad,topReps,e1rm:null,volume:null};
+  const est=Math.max(...valid.map(s=>epley(s.w,s.r)));
+  const volume=valid.reduce((sum,s)=>sum+s.w*s.r*(s.sideFactor||1),0);
+  return {topLoad,topReps,e1rm:est,volume};
+}
+function dateLabel(d){return new Date(d+'T12:00').toLocaleDateString(undefined,{day:'numeric',month:'short'})}
+function weightLabel(e){
+  const vals=(e.sets||[]).map(s=>s.w).filter(Number.isFinite);if(!vals.length)return '—';
+  return vals.every(v=>v===vals[0])?`${fmt(vals[0],0)} kg`:`${vals.map(v=>fmt(v,0)).join(' / ')} kg`;
+}
+function repsLabel(e){if(e.repsLabel)return e.repsLabel;return (e.sets||[]).map(s=>Number.isFinite(s.r)?s.r:'—').join(' / ')}
+function setsLabel(e){return e.setsLabel||String((e.sets||[]).length)}
+function strengthComparable(def){return def.entries.filter(e=>!e.limited&&!e.incomplete&&(!def.focusVariant||e.variant===def.focusVariant)&&entryMetrics(e).e1rm!=null)}
+function strengthAllChartable(def){return def.entries.filter(e=>!e.incomplete&&(!def.focusVariant||e.variant===def.focusVariant)&&entryMetrics(e).e1rm!=null)}
+function renderStrengthChart(el,def,baseline){
+  clear(el);const rows=strengthAllChartable(def);if(!rows.length){el.innerHTML='<div class="meta">No comparable series available yet.</div>';return}
+  const W=900,H=260,p={l:52,r:22,t:22,b:36},iw=W-p.l-p.r,ih=H-p.t-p.b;
+  const svg=svgEl('svg',{viewBox:`0 0 ${W} ${H}`,preserveAspectRatio:'none'});el.appendChild(svg);
+  const xs=rows.map(e=>new Date(e.date+'T12:00').getTime());const xmin=Math.min(...xs),xmax=Math.max(...xs);
+  const idx=rows.map(e=>entryMetrics(e).e1rm/baseline*100);let ymin=Math.min(90,...idx)-4,ymax=Math.max(110,...idx)+4;
+  const X=x=>p.l+(x-xmin)/(xmax-xmin||1)*iw,Y=y=>p.t+(ymax-y)/(ymax-ymin||1)*ih;
+  [ymin,100,(ymin+ymax)/2,ymax].sort((a,b)=>a-b).forEach((yv,j,arr)=>{if(j&&Math.abs(yv-arr[j-1])<1)return;const y=Y(yv);svg.appendChild(svgEl('line',{x1:p.l,x2:W-p.r,y1:y,y2:y,class:Math.abs(yv-100)<.01?'ref-line':'gridline'}));const t=svgEl('text',{x:p.l-8,y:y+4,'text-anchor':'end',class:'axistext'});t.textContent=Math.round(yv);svg.appendChild(t)});
+  TRAINING_TRAVEL.filter(t=>new Date(t.end+'T12:00').getTime()>=xmin&&new Date(t.start+'T12:00').getTime()<=xmax).forEach(t=>{const a=Math.max(xmin,new Date(t.start+'T12:00').getTime()),b=Math.min(xmax,new Date(t.end+'T12:00').getTime());const x1=X(a),x2=X(b);svg.appendChild(svgEl('rect',{x:x1,y:p.t,width:Math.max(3,x2-x1),height:ih,class:'travel-band'}));const tx=svgEl('text',{x:(x1+x2)/2,y:p.t+11,'text-anchor':'middle',class:'travel-band-label'});tx.textContent=t.label;svg.appendChild(tx)});
+  const comparable=rows.filter(e=>!e.limited);let path='';comparable.forEach((e,i)=>{const m=entryMetrics(e),x=X(new Date(e.date+'T12:00').getTime()),y=Y(m.e1rm/baseline*100);path+=(i?' L':'M')+x+' '+y});if(comparable.length)svg.appendChild(svgEl('path',{d:path,class:'strength-line'}));
+  rows.forEach(e=>{const m=entryMetrics(e),index=m.e1rm/baseline*100,x=X(new Date(e.date+'T12:00').getTime()),y=Y(index);const c=svgEl('circle',{cx:x,cy:y,r:e.limited?5.5:4.5,class:'strength-dot'+(e.limited?' travel':'')});const tt=svgEl('title');tt.textContent=`${dateLabel(e.date)} · ${e.variant}: index ${fmt(index,0)} · e1RM ${fmt(m.e1rm,1)} kg${e.context?' · '+e.context:''}`;c.appendChild(tt);svg.appendChild(c);const lab=svgEl('text',{x,y:y-9,'text-anchor':'middle',class:'ref-label'});lab.textContent=fmt(index,0);svg.appendChild(lab)});
+  rows.forEach(e=>{const t=svgEl('text',{x:X(new Date(e.date+'T12:00').getTime()),y:H-10,'text-anchor':'middle',class:'axistext'});t.textContent=dateLabel(e.date);svg.appendChild(t)});
+}
+let strengthKey='chest';
+Object.entries(STRENGTH).forEach(([k,v])=>{const b=document.createElement('button');b.className='tab'+(k===strengthKey?' active':'');b.textContent=v.label;b.onclick=()=>{strengthKey=k;document.querySelectorAll('#strengthTabs .tab').forEach(x=>x.classList.toggle('active',x===b));renderStrength()};$('#strengthTabs').appendChild(b)});
+function renderStrength(){
+  const def=STRENGTH[strengthKey],comp=strengthComparable(def);$('#strengthTitle').textContent=def.label;$('#strengthMeta').textContent=def.meta;
+  const baseline=comp.length?entryMetrics(comp[0]).e1rm:null, latest=comp.length?entryMetrics(comp[comp.length-1]):null, first=comp.length?entryMetrics(comp[0]):null;
+  const kpis=$('#strengthKpis');clear(kpis);
+  const add=(label,val,detail)=>{const d=document.createElement('div');d.className='benchmark-kpi';d.innerHTML=`<span class="bk">${label}</span><span class="bv">${val}</span><span class="bd">${detail}</span>`;kpis.appendChild(d)};
+  if(comp.length){
+    const loadD=pctDelta(latest.topLoad,first.topLoad),repD=pctDelta(latest.topReps,first.topReps),eD=pctDelta(latest.e1rm,first.e1rm),vD=pctDelta(latest.volume,first.volume),idx=latest.e1rm/first.e1rm*100;
+    add('Load progression',`${fmt(latest.topLoad,0)} kg`,`${loadD>=0?'+':''}${fmt(loadD,1)}% vs first comparable`);
+    add('Rep progression',`${fmt(latest.topReps,0)} reps`,`${repD>=0?'+':''}${fmt(repD,1)}% at session top load`);
+    add('Estimated 1RM',`${fmt(latest.e1rm,1)} kg`,`${eD>=0?'+':''}${fmt(eD,1)}% vs baseline`);
+    add('Session volume',`${fmt(latest.volume,0)} kg`,`${vD>=0?'+':''}${fmt(vD,1)}% vs baseline`);
+    add('Strength index',`${fmt(idx,0)}`,`Baseline = 100`);
+    renderStrengthChart($('#strengthChart'),def,baseline);
+  }else{$('#strengthChart').innerHTML='<div class="meta">No comparable benchmark series available yet.</div>'}
+  const ctx=$('#strengthContext');clear(ctx);TRAINING_TRAVEL.forEach(t=>{const x=document.createElement('span');x.className='travel-chip '+t.kind;x.innerHTML=`<span class="travel-dot"></span>${dateLabel(t.start)}–${dateLabel(t.end)} · ${t.label}`;ctx.appendChild(x)});
+  $('#strengthNote').textContent=def.focusVariant?`Progression KPIs use ${def.focusVariant}. Other leg variants remain in the history table for context.`:'Travel-limited points remain visible in the history and chart, but are excluded from progression KPIs when equipment capped the session.';
+  const tb=$('#strengthTable tbody');clear(tb);const baseByVariant={};def.entries.forEach(e=>{if(!e.incomplete&&!e.limited){const m=entryMetrics(e);if(m.e1rm!=null&&baseByVariant[e.variant]==null)baseByVariant[e.variant]=m.e1rm}});
+  def.entries.forEach(e=>{const m=entryMetrics(e),base=baseByVariant[e.variant],idx=(m.e1rm!=null&&base)?m.e1rm/base*100:null;const tr=document.createElement('tr');const contextClass=e.travel?'context-travel':'context-normal';tr.innerHTML=`<td>${dateLabel(e.date)} 2026</td><td><span class="variant-badge">${e.variant}</span></td><td>${weightLabel(e)}</td><td>${repsLabel(e)}</td><td>${setsLabel(e)}</td><td>${m.e1rm==null?'—':fmt(m.e1rm,1)+' kg'}</td><td>${m.volume==null?'—':fmt(m.volume,0)+' kg'}</td><td>${idx==null?'—':fmt(idx,0)}</td><td class="${contextClass}">${e.context||'—'}${e.limited?' · excluded from KPI':''}${e.incomplete?' · incomplete; excluded from calculations':''}</td>`;tb.appendChild(tr)});
+  $('#strengthTableTitle').textContent=`${def.label} · benchmark history`;
+}
+renderStrength();
+
+const monthTicks=['2026-04-01','2026-05-01','2026-06-01','2026-07-01','2026-08-01','2026-09-01'].map((d,i)=>({date:d,label:['Apr','May','Jun','Jul','Aug','Sep'][i]}));
+lineChart($('#weightChart'),D.weight6m.map(p=>({x:p.date,y:p.value})),{ymin:83,ymax:92,ref:84,refLabel:'Goal 84 kg',monthTicks,yFmt:v=>v.toFixed(0)});
+
+const bodyDefs={
+  pbf:{label:'Body fat %',unit:'%',vals:D.inbody.map(x=>x.pbf),ref:25,refLabel:'Goal <25%'},
+  smm:{label:'Skeletal muscle',unit:' kg',vals:D.inbody.map(x=>x.smm)},
+  weight:{label:'InBody weight',unit:' kg',vals:D.inbody.map(x=>x.weight),ref:84,refLabel:'Goal 84 kg'},
+  vfa:{label:'Visceral fat area',unit:' cm²',vals:D.inbody.map(x=>x.vfa),ref:100,refLabel:'100 cm²'}
+};
+let bodyMetric='pbf';
+Object.entries(bodyDefs).forEach(([k,v])=>{const b=document.createElement('button');b.className='tab'+(k===bodyMetric?' active':'');b.textContent=v.label;b.onclick=()=>{bodyMetric=k;document.querySelectorAll('#bodyTabs .tab').forEach(x=>x.classList.toggle('active',x===b));renderBody()};$('#bodyTabs').appendChild(b)});
+function renderBody(){const d=bodyDefs[bodyMetric];const pts=D.inbody.map((x,i)=>({x:x.date,y:d.vals[i],label:x.date}));lineChart($('#bodyChart'),pts,{ref:d.ref,refLabel:d.refLabel,monthTicks:D.inbody.map(x=>({date:x.date,label:new Date(x.date+'T12:00').toLocaleDateString(undefined,{month:'short',year:'2-digit'})})),tooltipFmt:v=>v+d.unit})}renderBody();
+
+const whoopOrder=['recovery','sleep','rhr','hrv','vo2','steps','volume'];
+let wm='recovery';
+whoopOrder.forEach(k=>{const v=D.whoop[k],b=document.createElement('button');b.className='tab'+(k===wm?' active':'');b.textContent=v.label;b.onclick=()=>{wm=k;document.querySelectorAll('#whoopTabs .tab').forEach(x=>x.classList.toggle('active',x===b));renderWhoop()};$('#whoopTabs').appendChild(b)});
+function renderWhoop(){
+  const v=D.whoop[wm];$('#whoopTitle').textContent=v.label;const sign=v.priorDelta>0?'+':'';$('#whoopMeta').textContent=`6M average ${fmt(v.avg, Number.isInteger(v.avg)?0:1)}${v.unit} · ${sign}${v.priorDelta}% vs prior 6 months`;
+  simpleLineCategories($('#whoopChart'),D.whoopMonths,v.monthly,{yFmt:y=>fmt(y,wm==='vo2'||wm==='hrv'||wm==='rhr'||wm==='recovery'||wm==='sleep'?0:0)});
+  const strip=$('#whoopStrip');clear(strip);v.monthly.forEach((x,i)=>{const d=document.createElement('div');d.className='mini';d.innerHTML=`<b>${fmt(x,Number.isInteger(x)?0:1)}${v.unit}</b><span>${D.whoopMonths[i]}</span>`;strip.appendChild(d)})
+}renderWhoop();
+barChart($('#trainingChart'),D.training);
+</script>
+</body>
+</html>
