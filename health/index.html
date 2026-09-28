@@ -89,7 +89,7 @@ dialog{border:0;border-radius:18px;padding:0;width:min(720px,calc(100% - 28px));
 .benchmark-note{font-size:11px;color:#536675;line-height:1.45;margin-top:8px}
 .variant-badge{display:inline-flex;border-radius:999px;background:#EEF4F8;color:#35566E;padding:3px 7px;font-size:10px;font-weight:800}
 .context-travel{color:#A86100;font-weight:800}.context-normal{color:#536675}
-.strength-line{fill:none;stroke:var(--teal);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}.strength-dot{fill:#fff;stroke:var(--teal);stroke-width:2.6}.strength-dot.travel{stroke:var(--orange);fill:#FFF8EA}.travel-band{fill:#F4A51C;opacity:.09}.travel-band-label{fill:#A86100;font-size:9px;font-weight:800}
+.strength-line{fill:none;stroke:var(--teal);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}.strength-dot{fill:#fff;stroke:var(--teal);stroke-width:2.6}.strength-dot.travel{stroke:var(--orange);fill:#FFF8EA}.travel-band{fill:#F4A51C;opacity:.09}.travel-band.current{fill:var(--purple);opacity:.13}.travel-band-label{fill:#A86100;font-size:9px;font-weight:800}.travel-band-label.current{fill:#5740A9}.today-line{stroke:var(--blue);stroke-width:2;stroke-dasharray:5 4}.today-label{fill:#0C63A9;font-size:10px;font-weight:900}.strength-scroll-hint{display:none;font-size:10px;color:var(--muted);font-weight:800;margin:2px 0 5px}#strengthChart{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
 .metric-help{background:#F8FAFC;border:1px solid #E0E8EE;border-radius:13px;padding:12px;font-size:11px;color:#536675;line-height:1.55}
 .metric-help b{color:var(--navy)}
 @media(max-width:1100px){.benchmark-layout{grid-template-columns:1fr}.benchmark-kpis{grid-template-columns:repeat(3,1fr)}}
@@ -142,7 +142,7 @@ dialog{border:0;border-radius:18px;padding:0;width:min(720px,calc(100% - 28px));
   .stat-strip::-webkit-scrollbar{display:none}.stat-strip .mini{flex:0 0 126px}
   .mini{padding:9px}.mini b{font-size:16px}.mini span{font-size:9.5px;line-height:1.25;display:block;margin-top:2px}
   .benchmark-kpis{display:flex;overflow-x:auto;gap:7px;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:5px}
-  .benchmark-kpis::-webkit-scrollbar{display:none}.benchmark-kpi{flex:0 0 142px;padding:9px}.benchmark-kpi .bv{font-size:17px}.benchmark-kpi .bd{font-size:9.5px}
+  .benchmark-kpis::-webkit-scrollbar{display:none}.benchmark-kpi{flex:0 0 142px;padding:9px}.benchmark-kpi .bv{font-size:17px}.benchmark-kpi .bd{font-size:9.5px}.strength-scroll-hint{display:block}#strengthChart svg{min-width:1050px}
   .benchmark-context{display:flex;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:4px}.benchmark-context::-webkit-scrollbar{display:none}.travel-chip{flex:0 0 auto}
   .callout{padding:11px 12px;font-size:12px;line-height:1.45}
   table{min-width:640px}#strengthTable{min-width:790px!important}th,td{padding:9px 9px;font-size:11px}
@@ -170,7 +170,7 @@ dialog{border:0;border-radius:18px;padding:0;width:min(720px,calc(100% - 28px));
       <div>
         <div class="kicker">Health & Performance Dashboard · Live</div>
         <h1>Mark — performance is improving in strength and body composition, while aerobic capacity and autonomic recovery remain the main gaps.</h1>
-        <div class="sub"><b>Last updated 24 Sep 2026</b> · Core Weight/Training metrics through 23 Sep · Strength benchmarks through 24 Sep · Excel scope restricted to <b>Weight</b> and <b>Training</b> tabs only.</div>
+        <div class="sub"><b>Dashboard updated 28 Sep 2026</b> · Core Weight/Training metrics through 23 Sep · Strength benchmarks through 24 Sep · travel context current · Excel scope restricted to <b>Weight</b> and <b>Training</b> tabs only.</div>
       </div>
       <div class="hero-actions">
         <button onclick="window.print()">Print / Save PDF</button>
@@ -192,6 +192,7 @@ dialog{border:0;border-radius:18px;padding:0;width:min(720px,calc(100% - 28px));
     <a href="#whoop">WHOOP</a>
     <a href="#training">Training</a>
     <a href="#strengthBenchmarks">Strength</a>
+    <a href="#functionalBenchmarks">Functional</a>
     <a href="#details">Details</a>
     <a href="#focus">6-week focus</a>
   </nav>
@@ -291,6 +292,7 @@ dialog{border:0;border-radius:18px;padding:0;width:min(720px,calc(100% - 28px));
           <div class="tabs" id="strengthTabs"></div>
         </div>
         <div id="strengthKpis" class="benchmark-kpis"></div>
+        <div class="strength-scroll-hint">Swipe chart ↔ to move through time</div>
         <div id="strengthChart" class="chart"></div>
         <div id="strengthContext" class="benchmark-context"></div>
         <div id="strengthNote" class="benchmark-note"></div>
@@ -451,8 +453,8 @@ const STRENGTH={
   ]}
 };
 const TRAINING_TRAVEL=[
-  {start:'2026-09-15',end:'2026-09-18',label:'Algeria',kind:'current'},
-  {start:'2026-09-27',end:'2026-10-04',label:'Morocco',kind:'future'},
+  {start:'2026-09-15',end:'2026-09-18',label:'Algeria',kind:'past'},
+  {start:'2026-09-27',end:'2026-10-04',label:'Morocco',kind:'current'},
   {start:'2026-10-11',end:'2026-10-15',label:'Kenya Xceed',kind:'future'}
 ];
 
