@@ -12,6 +12,7 @@ This file records the default maintenance workflow for Mark's live Health & Perf
 Whenever Mark provides a new health or training metric in the `Training Progress & Tracking` chat that is relevant to the live dashboard, treat it as an instruction to update the live Health Dashboard automatically unless Mark says otherwise.
 
 Examples include:
+- Blood pressure and pulse readings (including uploaded BP exports)
 - Weight and waist measurements
 - Body fat %, muscle mass and InBody results
 - Strength PBs and tracked exercise performance
@@ -38,3 +39,10 @@ Examples include:
 - If Mark explicitly says a data point is provisional, estimated, incorrect, or should not be added yet, do not update the live dashboard.
 - If essential details are ambiguous, ask for clarification before writing.
 - Medical interpretation and dashboard recording are separate: a metric can be recorded without treating it as a diagnosis.
+
+## Blood pressure tracking
+- BP readings supplied in a health/dashboard chat should be added to `BP_READINGS` in `health/index.html`.
+- Retain original pressure units and values. Current export is kPa; convert with 1 kPa = 7.50062 mmHg for display and calculate averages before rounding.
+- Preserve timestamps and distinct same-minute readings. Check overlapping exports against existing records before appending.
+- Update the BP coverage date and dashboard update date. Keep other metric coverage dates intact.
+- Daily charts average readings by recorded calendar date. Do not infer a longitudinal trend from one day or invent a timezone absent from the source.
