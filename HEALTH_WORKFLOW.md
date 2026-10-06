@@ -44,7 +44,7 @@ Examples include:
 
 ## Blood pressure tracking
 - BP readings supplied in a health/dashboard chat should be added to `BP_READINGS` in `health/index.html`.
-- Retain original pressure units and values. Current export is kPa; convert with 1 kPa = 7.50062 mmHg for display and calculate averages before rounding.
+- Retain original pressure units and values. Historical export is kPa; manually supplied readings may be mmHg. Convert kPa with 1 kPa = 7.50062 mmHg for display and calculate averages before rounding.
 - Preserve timestamps and distinct same-minute readings. Check overlapping exports against existing records before appending.
 - Update the BP coverage date and dashboard update date. Keep other metric coverage dates intact.
 - Daily charts average readings by recorded calendar date. Do not infer a longitudinal trend from one day or invent a timezone absent from the source.
