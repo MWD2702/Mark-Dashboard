@@ -28,6 +28,8 @@ Examples include:
 4. Do not overwrite or drop prior metrics unintentionally.
 5. Verify the requested data is present in the repository after the write.
 6. Tell Mark that the live dashboard has been updated. He should not need to repeat the same data in the Health Dashboard chat.
+7. Image-only workout screenshots in the Training Progress & Tracking chat must be transcribed into the live dashboard during that same update turn (date, exercise, load, reps, sets and relevant WHOOP totals). Do not rely on being able to recover the screenshot details from a different chat later.
+8. `MWD2702/Mark-Dashboard` is the canonical repository. Do not update the older `MWD2702/Health-Dashboard` repository.
 
 ## Chat workflow
 - Calendar data -> Calendar Dashboard chat -> live `calendar/index.html`
