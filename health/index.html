@@ -170,7 +170,7 @@ dialog{border:0;border-radius:18px;padding:0;width:min(720px,calc(100% - 28px));
       <div>
         <div class="kicker">Health & Performance Dashboard · Live</div>
         <h1>Mark — performance is improving in strength and body composition, while aerobic capacity and autonomic recovery remain the main gaps.</h1>
-        <div class="sub"><b>Dashboard updated 6 Oct 2026</b> · Weight through 27 Sep · Training aggregate through 6 Oct · Detailed strength benchmarks through 6 Oct · WHOOP raw export through 28 Sep (workouts through 29 Sep) · Trend View snapshots through 1 Oct · InBody history expanded to six scans · BP through 4 Oct.</div>
+        <div class="sub"><b>Dashboard updated 6 Oct 2026</b> · Weight through 27 Sep · Training aggregate through 6 Oct · Detailed strength benchmarks through 6 Oct · WHOOP raw export through 28 Sep (workouts through 29 Sep) · Trend View snapshots through 1 Oct · InBody history expanded to six scans · BP through 6 Oct.</div>
       </div>
       <div class="hero-actions">
         <button onclick="window.print()">Print / Save PDF</button>
@@ -218,7 +218,7 @@ dialog{border:0;border-radius:18px;padding:0;width:min(720px,calc(100% - 28px));
   </section>
 
 <section class="section" id="bloodPressure">
-<div class="section-head"><h2>Blood pressure</h2><div class="section-note">BP through 4 Oct 2026 · daily averages and individual readings</div></div>
+<div class="section-head"><h2>Blood pressure</h2><div class="section-note">BP through 6 Oct 2026 · daily averages and individual readings</div></div>
 <div class="grid4">
 <div class="card"><div class="label">Latest reading</div><div class="big" id="bpLatest"></div><div class="meta" id="bpLatestMeta"></div></div>
 <div class="card"><div class="label">Latest day average</div><div class="big" id="bpAverage"></div><div class="meta" id="bpAverageMeta"></div></div>
@@ -227,8 +227,8 @@ dialog{border:0;border-radius:18px;padding:0;width:min(720px,calc(100% - 28px));
 </div>
 <div class="panel" style="margin-top:12px"><div class="panel-head"><h3>Daily blood pressure trend · mmHg</h3><div class="section-note">Each point averages all readings on that date.</div></div>
 <div class="tabs" id="bpTabs"></div><div class="chart" id="bpChart"></div><div class="meta" id="bpTrendNote"></div></div>
-<div class="panel" style="margin-top:12px"><h3>Measurement log</h3><div class="meta">Original export uses kPa. Display conversion: 1 kPa = 7.50062 mmHg; averages calculated before rounding. Times retained as recorded; timezone not provided by the export. Two distinct readings at 18:56 are retained.</div>
-<div class="table-wrap" style="margin-top:10px"><table style="min-width:520px"><thead><tr><th>Date / time</th><th>Systolic mmHg</th><th>Diastolic mmHg</th><th>Pulse bpm</th><th>Original kPa</th></tr></thead><tbody id="bpRows"></tbody></table></div></div>
+<div class="panel" style="margin-top:12px"><h3>Measurement log</h3><div class="meta">Historical export readings are retained in kPa and converted using 1 kPa = 7.50062 mmHg. New manually supplied readings are retained in their original mmHg. Daily averages are calculated in mmHg before rounding. Times are retained as recorded.</div>
+<div class="table-wrap" style="margin-top:10px"><table style="min-width:520px"><thead><tr><th>Date / time</th><th>Systolic mmHg</th><th>Diastolic mmHg</th><th>Pulse bpm</th><th>Original reading</th></tr></thead><tbody id="bpRows"></tbody></table></div></div>
 </section>
   <section class="section" id="composition">
     <div class="grid2">
@@ -647,22 +647,31 @@ function renderWhoopHistory(){const def=WHOOP_HISTORY_DEFS[whoopHistMetric];let 
 renderWhoopHistory();
 barChart($('#trainingChart'),D.training);
 
-const BP_READINGS=[{"date":"2026-10-04","time":"18:49","sysKpa":14.7,"diaKpa":9.2,"pulse":76},{"date":"2026-10-04","time":"18:56","sysKpa":14.9,"diaKpa":9.2,"pulse":79},{"date":"2026-10-04","time":"18:56","sysKpa":15.1,"diaKpa":9.2,"pulse":79},{"date":"2026-10-04","time":"18:57","sysKpa":14.8,"diaKpa":9.2,"pulse":78}];
+const BP_READINGS=[
+  {"date":"2026-10-04","time":"18:49","sysKpa":14.7,"diaKpa":9.2,"pulse":76,"unit":"kPa"},
+  {"date":"2026-10-04","time":"18:56","sysKpa":14.9,"diaKpa":9.2,"pulse":79,"unit":"kPa"},
+  {"date":"2026-10-04","time":"18:56","sysKpa":15.1,"diaKpa":9.2,"pulse":79,"unit":"kPa"},
+  {"date":"2026-10-04","time":"18:57","sysKpa":14.8,"diaKpa":9.2,"pulse":78,"unit":"kPa"},
+  {"date":"2026-10-06","time":"12:20","sysMmhg":111,"diaMmhg":70,"pulse":73,"unit":"mmHg"}
+];
 const BP_KPA_TO_MMHG=7.50062;
+const bpSys=r=>Number.isFinite(r.sysMmhg)?r.sysMmhg:r.sysKpa*BP_KPA_TO_MMHG;
+const bpDia=r=>Number.isFinite(r.diaMmhg)?r.diaMmhg:r.diaKpa*BP_KPA_TO_MMHG;
+const bpOriginal=r=>r.unit==='mmHg'?Math.round(r.sysMmhg)+' / '+Math.round(r.diaMmhg)+' mmHg':r.sysKpa.toFixed(1)+' / '+r.diaKpa.toFixed(1)+' kPa';
 const bpGroups=new Map();
 BP_READINGS.forEach(r=>{if(!bpGroups.has(r.date))bpGroups.set(r.date,[]);bpGroups.get(r.date).push(r)});
-const bpDaily=[...bpGroups.entries()].sort((a,b)=>a[0].localeCompare(b[0])).map(([date,rs])=>({date,n:rs.length,sys:rs.reduce((s,r)=>s+r.sysKpa*BP_KPA_TO_MMHG,0)/rs.length,dia:rs.reduce((s,r)=>s+r.diaKpa*BP_KPA_TO_MMHG,0)/rs.length,pulse:rs.reduce((s,r)=>s+r.pulse,0)/rs.length}));
+const bpDaily=[...bpGroups.entries()].sort((a,b)=>a[0].localeCompare(b[0])).map(([date,rs])=>({date,n:rs.length,sys:rs.reduce((s,r)=>s+bpSys(r),0)/rs.length,dia:rs.reduce((s,r)=>s+bpDia(r),0)/rs.length,pulse:rs.reduce((s,r)=>s+r.pulse,0)/rs.length}));
 const bpLatest=BP_READINGS[BP_READINGS.length-1],bpDay=bpDaily[bpDaily.length-1];
 const bpPair=(s,d)=>Math.round(s)+'/'+Math.round(d)+' <span class="unit">mmHg</span>';
-$('#bpLatest').innerHTML=bpPair(bpLatest.sysKpa*BP_KPA_TO_MMHG,bpLatest.diaKpa*BP_KPA_TO_MMHG);
+$('#bpLatest').innerHTML=bpPair(bpSys(bpLatest),bpDia(bpLatest));
 $('#bpLatestMeta').textContent=bpLatest.date+' · '+bpLatest.time;
 $('#bpAverage').innerHTML=bpPair(bpDay.sys,bpDay.dia);
-$('#bpAverageMeta').textContent=bpDay.date+' · '+bpDay.n+' readings';
+$('#bpAverageMeta').textContent=bpDay.date+' · '+bpDay.n+' reading'+(bpDay.n===1?'':'s');
 $('#bpPulse').innerHTML=bpLatest.pulse+' <span class="unit">bpm</span>';
 $('#bpPulseMeta').textContent='Latest day average: '+Math.round(bpDay.pulse)+' bpm';
 $('#bpCount').innerHTML=BP_READINGS.length+' <span class="unit">readings</span>';
 $('#bpCount').insertAdjacentHTML('afterend','<div class="meta">'+bpDaily.length+' measurement day(s)</div>');
-BP_READINGS.slice().reverse().forEach(r=>{const tr=document.createElement('tr');[r.date+' '+r.time,Math.round(r.sysKpa*BP_KPA_TO_MMHG),Math.round(r.diaKpa*BP_KPA_TO_MMHG),r.pulse,r.sysKpa.toFixed(1)+' / '+r.diaKpa.toFixed(1)].forEach(v=>{const td=document.createElement('td');td.textContent=v;tr.appendChild(td)});$('#bpRows').appendChild(tr)});
+BP_READINGS.slice().reverse().forEach(r=>{const tr=document.createElement('tr');[r.date+' '+r.time,Math.round(bpSys(r)),Math.round(bpDia(r)),r.pulse,bpOriginal(r)].forEach(v=>{const td=document.createElement('td');td.textContent=v;tr.appendChild(td)});$('#bpRows').appendChild(tr)});
 let bpMetric='sys';
 function renderBP(){lineChart($('#bpChart'),bpDaily.map(r=>({x:r.date+'T12:00:00',y:r[bpMetric],label:r.date})),{showDots:true,ymin:40,ymax:160,yFmt:v=>Math.round(v),tooltipFmt:v=>v.toFixed(1)+' mmHg',monthTicks:bpDaily.filter((r,i)=>i===0||i===bpDaily.length-1||i%Math.ceil(bpDaily.length/5)===0).map(r=>({date:r.date+'T12:00:00',label:r.date.slice(5)}))});$('#bpTrendNote').textContent=bpDaily.length===1?'First measurement day — no longitudinal trend yet.':'Daily averages across '+bpDaily.length+' measurement days.';}
 [['sys','Systolic'],['dia','Diastolic']].forEach(([key,label])=>{const b=document.createElement('button');b.className='tab'+(key===bpMetric?' active':'');b.textContent=label;b.onclick=()=>{bpMetric=key;document.querySelectorAll('#bpTabs .tab').forEach(x=>x.classList.toggle('active',x===b));renderBP()};$('#bpTabs').appendChild(b)});renderBP();
