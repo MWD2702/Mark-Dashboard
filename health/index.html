@@ -170,7 +170,7 @@ dialog{border:0;border-radius:18px;padding:0;width:min(720px,calc(100% - 28px));
       <div>
         <div class="kicker">Health & Performance Dashboard · Live</div>
         <h1>Mark — performance is improving in strength and body composition, while aerobic capacity and autonomic recovery remain the main gaps.</h1>
-        <div class="sub"><b>Dashboard updated 4 Oct 2026</b> · Weight through 27 Sep · Training through 30 Sep · Strength benchmarks through 29 Sep · WHOOP raw export through 28 Sep (workouts through 29 Sep) · Trend View snapshots through 1 Oct · InBody history expanded to six scans · BP through 4 Oct.</div>
+        <div class="sub"><b>Dashboard updated 6 Oct 2026</b> · Weight through 27 Sep · Training aggregate through 6 Oct · Detailed strength benchmarks through 29 Sep · WHOOP raw export through 28 Sep (workouts through 29 Sep) · Trend View snapshots through 1 Oct · InBody history expanded to six scans · BP through 4 Oct.</div>
       </div>
       <div class="hero-actions">
         <button onclick="window.print()">Print / Save PDF</button>
@@ -305,7 +305,7 @@ dialog{border:0;border-radius:18px;padding:0;width:min(720px,calc(100% - 28px));
           <div class="mini"><b>26</b><span>Recorded walks</span></div>
           <div class="mini"><b>76.8 km</b><span>Walking</span></div>
         </div>
-        <div class="callout" style="margin-top:12px"><b>Pattern:</b> July was the low point at 2 structured sessions. August rebounded to 15 and September closed at 14 despite Algeria and Morocco travel. October currently has 1 gym session (47 min) from the Excel tracker. Movement-level strength benchmarks require the detailed load / reps / sets from the Training Progress log.</div>
+        <div class="callout" style="margin-top:12px"><b>Pattern:</b> July was the low point at 2 structured sessions. August rebounded to 15 and September closed at 14 despite Algeria and Morocco travel. October currently has 1 gym session (47 min) from the Excel tracker. Movement-level strength benchmarks require the detailed load / reps / sets from the Training Progress log.</div><div class="callout" style="margin-top:10px"><b>29 Sep · Morocco Pull (recovered from Training Progress):</b> 54 min · 26 sets · 289 reps · 7,135 kg volume · strain 13.1 · 73% muscular / 27% cardio. Incline DB row 35 kg total × 10 × 4; lat pulldown 50 kg × 10 × 4; single-arm row 17.5 kg/side × 10, 12, 15, 15; goblet squat 15 kg × 12 × 4; supinated curls 30 kg total × 6 × 2 then 25 kg × 7; hammer-curl finisher. Only comparable benchmark movements feed the progression KPIs.</div>
       </div>
     </div>
   </section>
@@ -487,9 +487,10 @@ const STRENGTH={
     {date:'2026-08-29',variant:'Hack squat',sets:[{w:15,r:12},{w:15,r:12},{w:15,r:12},{w:15,r:12}],context:'Home'},
     {date:'2026-08-29',variant:'Raised-heel goblet squat',sets:[{w:16,r:12},{w:16,r:12},{w:16,r:12},{w:16,r:12}],context:'Home'},
     {date:'2026-08-29',variant:'Bulgarian split squat',sets:[{w:12,r:12,sideFactor:2},{w:12,r:12,sideFactor:2},{w:12,r:12,sideFactor:2},{w:12,r:12,sideFactor:2}],repsLabel:'12 / side',setsLabel:'4',context:'Home'},
-    {date:'2026-09-16',variant:'Leg press',sets:[{w:50,r:null},{w:50,r:null},{w:70,r:15},{w:80,r:15}],repsLabel:'— / — / 15 / 15',setsLabel:'4',context:'Algeria · hotel gym · first two reps not preserved',travel:true,incomplete:true}
+    {date:'2026-09-16',variant:'Leg press',sets:[{w:50,r:null},{w:50,r:null},{w:70,r:15},{w:80,r:15}],repsLabel:'— / — / 15 / 15',setsLabel:'4',context:'Algeria · hotel gym · first two reps not preserved',travel:true,incomplete:true},
+    {date:'2026-09-29',variant:'Goblet squat',sets:[{w:15,r:12},{w:15,r:12},{w:15,r:12},{w:15,r:12}],setsLabel:'4',repsLabel:'12 × 4',context:'Morocco · hotel gym',travel:true,limited:true}
   ]},
-  curl:{label:'EZ-bar curl',meta:'EZ-bar only; hammer curls, machine curls and barbell curls are excluded.',entries:[
+  curl:{label:'EZ-bar curl',meta:'EZ-bar only; hammer curls, machine curls and other curl variants are excluded from this progression series.',entries:[
     {date:'2026-08-18',variant:'EZ-bar curl',sets:[{w:18,r:8},{w:23,r:6},{w:23,r:7},{w:23,r:5}],context:'Home'},
     {date:'2026-08-25',variant:'EZ-bar curl',sets:[{w:23,r:8},{w:23,r:8},{w:23,r:8},{w:23,r:7}],context:'Home'},
     {date:'2026-09-01',variant:'EZ-bar curl',sets:[{w:23,r:10},{w:23,r:10},{w:23,r:10},{w:23,r:10}],context:'Home'},
@@ -499,7 +500,7 @@ const STRENGTH={
 };
 const TRAINING_TRAVEL=[
   {start:'2026-09-15',end:'2026-09-18',label:'Algeria',kind:'past'},
-  {start:'2026-09-27',end:'2026-10-04',label:'Morocco',kind:'current'},
+  {start:'2026-09-27',end:'2026-10-04',label:'Morocco',kind:'past'},
   {start:'2026-10-11',end:'2026-10-15',label:'Kenya Xceed',kind:'future'}
 ];
 
