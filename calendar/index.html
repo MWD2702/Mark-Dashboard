@@ -196,7 +196,7 @@ const filters=document.getElementById('filters');
 const allBtn=document.createElement('button');allBtn.type='button';allBtn.dataset.filter='all';allBtn.className='active';allBtn.textContent='Show all';filters.appendChild(allBtn);
 Object.entries(cats).forEach(([k,v])=>{const b=document.createElement('button');b.type='button';b.dataset.filter=k;b.textContent=v.label;filters.appendChild(b)});
 
-function visibleEventsForMonth(y,m){const ms=iso(y,m,1),me=iso(y,m,new Date(y,m,0).getDate());return events.filter(e=>(activeFilter==='all'||e.cat===activeFilter)&&!(e.end<ms||e.start>me))}
+function visibleEventsForMonth(y,m){const ms=iso(y,m,1),me=iso(y,m,new Date(y,m,0).getDate());return events.filter(e=>(activeFilter==='all'||e.cat===activeFilter)&&!(e.end<ms||e.start>me)).sort((a,b)=>a.start.localeCompare(b.start)||a.end.localeCompare(b.end)||a.label.localeCompare(b.label))}
 function showEvent(e){document.getElementById('modalTitle').textContent=e.label;document.getElementById('modalCat').textContent=cats[e.cat].label;document.getElementById('modalDot').style.background=cats[e.cat].fill;document.getElementById('modalDates').textContent='Dates: '+formatRange(e);const dlg=document.getElementById('eventDialog');if(typeof dlg.showModal==='function')dlg.showModal()}
 function openEventFromMonth(e){const md=document.getElementById('monthDialog');if(md.open)md.close();setTimeout(()=>showEvent(e),30)}
 
