@@ -13,8 +13,9 @@ Whenever Mark adds, changes, moves, renames, or removes a calendar item in the M
 2. Update `calendar/index.html` in this repository.
 3. Preserve the existing calendar design and functionality unless Mark specifically requests a design change.
 4. Preserve category colours, month zoom, filters, clickable events, current-day highlight, and Monday/Friday TRT shading.
-5. Verify the requested event(s) are present in the repository after the write.
-6. Tell Mark the live calendar has been updated. Do not require him to separately say “update GitHub” each time.
+5. Ensure all monthly “Key items” lists are rendered in chronological order, regardless of the order in which events were added or edited.
+6. Verify the requested event(s) are present in the repository after the write.
+7. Tell Mark the live calendar has been updated. Do not require him to separately say “update GitHub” each time.
 
 ## Exceptions
 - If Mark explicitly says the item is provisional, a draft, or should not yet be added, do not update the live calendar.
