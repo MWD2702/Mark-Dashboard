@@ -141,13 +141,17 @@ const events = [
   {start:'2026-10-13',end:'2026-10-13',label:'Algeria deal - Meera',cat:'key_meeting'},
   {start:'2026-10-14',end:'2026-10-14',label:'Algeria deal - Achin',cat:'key_meeting'},
   {start:'2026-10-16',end:'2026-10-16',label:'Morocco Review - Paul',cat:'key_meeting'},
+  {start:'2026-10-16',end:'2026-10-16',label:'TRT · final dose before 1-week break',cat:'personal'},
+  {start:'2026-10-17',end:'2026-10-23',label:'TRT break · 1 week',cat:'personal'},
   {start:'2026-10-17',end:'2026-10-17',label:'Band playing at 301 · 7pm',cat:'personal'},
   {start:'2026-10-18',end:'2026-10-18',label:'Tamara b-day lunch · 12pm',cat:'personal'},
   {start:'2026-10-19',end:'2026-10-19',label:'NA Governance',cat:'key_meeting'},
   {start:'2026-10-12',end:'2026-10-12',label:'SSA Governance',cat:'key_meeting'},
   {start:'2026-10-21',end:'2026-10-21',label:'OneAfrica Governance',cat:'key_meeting'},
   {start:'2026-10-22',end:'2026-10-22',label:'H1 Results',cat:'key_meeting'},
+  {start:'2026-10-23',end:'2026-10-23',label:'Blood tests',cat:'personal'},
   {start:'2026-10-24',end:'2026-10-24',label:'Prakash party bus · 11:20am',cat:'personal'},
+  {start:'2026-10-26',end:'2026-10-26',label:'Dr Henning',cat:'personal'},
   {start:'2026-11-01',end:'2026-11-01',label:'Sue/Tom lunch (TBC)',cat:'personal'},
   {start:'2026-11-03',end:'2026-11-03',label:'OLAP feedback',cat:'key_meeting'},
   {start:'2026-11-07',end:'2026-11-07',label:'Blake/Anandi anniversary dinner · 4pm',cat:'personal'},
@@ -176,6 +180,7 @@ const cats = {
 const quotes={9:'New months. New adventures.',10:'New places. Great experiences.',11:'Island time. Good for the soul.',12:'Time together. That matters.'};
 const monthNames=['January','February','March','April','May','June','July','August','September','October','November','December'];
 const dow=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const trtBreakDates=new Set(['2026-10-19','2026-10-23']);
 let activeFilter='all', midnightTimer=null;
 let viewStart=firstOfMonth(new Date());
 
@@ -212,7 +217,7 @@ function showMonth(y,m){
   const start=monthGridStart(y,m),todayIso=currentTodayIso();
   for(let i=0;i<42;i++){
     const dt=new Date(start);dt.setDate(start.getDate()+i);const p=parts(dt),ds=iso(p.y,p.m,p.d);
-    const isTRTDay=(p.m===m && (dt.getDay()===1 || dt.getDay()===5));
+    const isTRTDay=(p.m===m && (dt.getDay()===1 || dt.getDay()===5) && !trtBreakDates.has(ds));
     const cell=document.createElement('div');cell.className='zday'+(p.m!==m?' other':'')+(isTRTDay?' trt-day':'');
     const num=document.createElement('span');num.className='znum'+(ds===todayIso?' today':'');num.textContent=p.d;cell.appendChild(num);
     if(isTRTDay){const tag=document.createElement('span');tag.className='ztrt-tag';tag.textContent='TRT';tag.title='TRT injection reminder';cell.appendChild(tag);}
@@ -233,7 +238,7 @@ function renderMonth(container,y,m){
   const start=monthGridStart(y,m),todayIso=currentTodayIso();
   for(let i=0;i<42;i++){
     const dt=new Date(start);dt.setDate(start.getDate()+i);const p=parts(dt),ds=iso(p.y,p.m,p.d);
-    const isTRTDay=(p.m===m && (dt.getDay()===1 || dt.getDay()===5));
+    const isTRTDay=(p.m===m && (dt.getDay()===1 || dt.getDay()===5) && !trtBreakDates.has(ds));
     const cell=document.createElement('div');cell.className='day'+(p.m!==m?' other':'')+(isTRTDay?' trt-day':'');const num=document.createElement('span');num.className='num'+(ds===todayIso?' today':'');num.textContent=p.d;cell.appendChild(num);
     if(isTRTDay){const tag=document.createElement('span');tag.className='trt-tag';tag.textContent='TRT';tag.title='TRT injection reminder';cell.appendChild(tag);}
     events.filter(e=>(activeFilter==='all'||e.cat===activeFilter)&&e.start<=ds&&e.end>=ds).forEach(e=>{const bar=document.createElement('button');bar.type='button';bar.className='ev';bar.style.background=cats[e.cat].fill;bar.textContent=e.label;bar.title=`${e.label} · ${formatRange(e)}`;bar.addEventListener('click',()=>showEvent(e));cell.appendChild(bar)});
