@@ -170,7 +170,7 @@ dialog{border:0;border-radius:18px;padding:0;width:min(720px,calc(100% - 28px));
       <div>
         <div class="kicker">Health & Performance Dashboard · Live</div>
         <h1>Mark — performance is improving in strength and body composition, while aerobic capacity and autonomic recovery remain the main gaps.</h1>
-        <div class="sub"><b>Dashboard updated 16 Oct 2026</b> · Weight through 27 Sep · Waist through 7 Oct · Training aggregate through 16 Oct · Detailed strength benchmarks through 16 Oct · WHOOP raw export through 28 Sep (workouts through 29 Sep) · Trend View snapshots through 1 Oct · InBody history expanded to six scans · BP through 6 Oct.</div>
+        <div class="sub"><b>Dashboard updated 17 Oct 2026</b> · Weight through 27 Sep · Waist through 7 Oct · Training aggregate through 16 Oct · Detailed strength benchmarks through 16 Oct · WHOOP raw export through 28 Sep (workouts through 29 Sep) · Trend View snapshots through 1 Oct · InBody history expanded to six scans · BP through 17 Oct.</div>
       </div>
       <div class="hero-actions">
         <button onclick="window.print()">Print / Save PDF</button>
@@ -218,7 +218,7 @@ dialog{border:0;border-radius:18px;padding:0;width:min(720px,calc(100% - 28px));
   </section>
 
 <section class="section" id="bloodPressure">
-<div class="section-head"><h2>Blood pressure</h2><div class="section-note">BP through 6 Oct 2026 · daily averages and individual readings</div></div>
+<div class="section-head"><h2>Blood pressure</h2><div class="section-note">BP through 17 Oct 2026 · daily averages and individual readings</div></div>
 <div class="grid4">
 <div class="card"><div class="label">Latest reading</div><div class="big" id="bpLatest"></div><div class="meta" id="bpLatestMeta"></div></div>
 <div class="card"><div class="label">Latest day average</div><div class="big" id="bpAverage"></div><div class="meta" id="bpAverageMeta"></div></div>
@@ -227,7 +227,7 @@ dialog{border:0;border-radius:18px;padding:0;width:min(720px,calc(100% - 28px));
 </div>
 <div class="panel" style="margin-top:12px"><div class="panel-head"><h3>Daily blood pressure trend · mmHg</h3><div class="section-note">Each point averages all readings on that date.</div></div>
 <div class="tabs" id="bpTabs"></div><div class="chart" id="bpChart"></div><div class="meta" id="bpTrendNote"></div></div>
-<div class="panel" style="margin-top:12px"><h3>Measurement log</h3><div class="meta">Historical export readings are retained in kPa and converted using 1 kPa = 7.50062 mmHg. New manually supplied readings are retained in their original mmHg. Daily averages are calculated in mmHg before rounding. Times are retained as recorded.</div>
+<div class="panel" style="margin-top:12px"><h3>Measurement log</h3><div class="meta">Device-export readings are retained in their original kPa and converted using 1 kPa = 7.50062 mmHg for display. Daily averages are calculated in mmHg before rounding. Times are retained as recorded; duplicate same-minute readings are preserved when the export contains distinct measurements.</div>
 <div class="table-wrap" style="margin-top:10px"><table style="min-width:520px"><thead><tr><th>Date / time</th><th>Systolic mmHg</th><th>Diastolic mmHg</th><th>Pulse bpm</th><th>Original reading</th></tr></thead><tbody id="bpRows"></tbody></table></div></div>
 </section>
   <section class="section" id="composition">
@@ -676,8 +676,13 @@ const BP_READINGS=[
   {"date":"2026-10-04","time":"18:56","sysKpa":14.9,"diaKpa":9.2,"pulse":79,"unit":"kPa"},
   {"date":"2026-10-04","time":"18:56","sysKpa":15.1,"diaKpa":9.2,"pulse":79,"unit":"kPa"},
   {"date":"2026-10-04","time":"18:57","sysKpa":14.8,"diaKpa":9.2,"pulse":78,"unit":"kPa"},
-  {"date":"2026-10-06","time":"12:20","sysMmhg":111,"diaMmhg":70,"pulse":73,"unit":"mmHg"}
-];
+  {"date":"2026-10-06","time":"12:19","sysKpa":14.8,"diaKpa":9.3,"pulse":71,"unit":"kPa"},
+  {"date":"2026-10-06","time":"12:20","sysKpa":14.7,"diaKpa":9.5,"pulse":73,"unit":"kPa"},
+  {"date":"2026-10-06","time":"12:21","sysKpa":14.8,"diaKpa":9.3,"pulse":74,"unit":"kPa"},
+  {"date":"2026-10-17","time":"18:43","sysKpa":15.7,"diaKpa":9.9,"pulse":74,"unit":"kPa"},
+  {"date":"2026-10-17","time":"18:43","sysKpa":15.3,"diaKpa":9.9,"pulse":73,"unit":"kPa"},
+  {"date":"2026-10-17","time":"18:44","sysKpa":15.3,"diaKpa":9.5,"pulse":74,"unit":"kPa"}
+]
 const BP_KPA_TO_MMHG=7.50062;
 const bpSys=r=>Number.isFinite(r.sysMmhg)?r.sysMmhg:r.sysKpa*BP_KPA_TO_MMHG;
 const bpDia=r=>Number.isFinite(r.diaMmhg)?r.diaMmhg:r.diaKpa*BP_KPA_TO_MMHG;
