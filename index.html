@@ -17,7 +17,7 @@ body{margin:0;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,
 .eyebrow{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);margin-bottom:8px}
 h1{margin:0;color:var(--navy);font-size:clamp(30px,8vw,48px);line-height:1.02;letter-spacing:-.03em}
 .sub{margin:10px 0 24px;color:var(--muted);font-size:15px;line-height:1.45}
-.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
 .tile{display:block;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:22px;min-height:180px;position:relative;overflow:hidden}
 .tile:active{transform:scale(.99)}
 .icon{font-size:30px;margin-bottom:24px}
@@ -33,7 +33,7 @@ h1{margin:0;color:var(--navy);font-size:clamp(30px,8vw,48px);line-height:1.02;le
 <main class="wrap">
   <div class="eyebrow">Personal dashboard</div>
   <h1>Mark Dashboard</h1>
-  <div class="sub">One place for your health, performance and family planning dashboards.</div>
+  <div class="sub">One place for health, family planning and finances.</div>
   <section class="grid">
     <a class="tile" href="./health/">
       <div class="icon">◉</div>
@@ -54,6 +54,13 @@ h1{margin:0;color:var(--navy);font-size:clamp(30px,8vw,48px);line-height:1.02;le
       <h2>Emma · Grade 9</h2>
       <p>2026 report trends, subject averages, teacher themes and Term 4 target planning.</p>
       <span class="badge">Live</span>
+      <span class="go">→</span>
+    </a>
+    <a class="tile" href="https://daly-assets-debt.basicgiant5.chatgpt.site">
+      <div class="icon">R</div>
+      <h2>Assets &amp; Debt</h2>
+      <p>Asset summaries, financing arrangements, repayment scenarios and cash planning.</p>
+      <span class="badge">Private · sign in</span>
       <span class="go">→</span>
     </a>
   </section>
