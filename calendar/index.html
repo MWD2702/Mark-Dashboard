@@ -217,7 +217,7 @@ if(actualToday<addMonths(firstOfMonth(earliest),-1)||actualToday>addMonths(first
 
 Object.entries(cats).forEach(([k,v])=>{const p=document.createElement('span');p.className='pill';p.innerHTML=`<span class="swatch" style="background:${v.fill}"></span>${v.label}`;document.getElementById('legend').appendChild(p)});
 const trtPill=document.createElement('span');trtPill.className='pill';trtPill.innerHTML='<span class="swatch" style="background:#D7F0FD;border:1px solid #68BFEF"></span>TRT reminder · Mon / Fri';document.getElementById('legend').appendChild(trtPill);
-const glpPill=document.createElement('span');glpPill.className='pill';glpPill.innerHTML='<span class="swatch" style="background:#DDF7EE;border:1px solid #79D6B8"></span>GLP-1 · 10 clicks · Mon / Fri';document.getElementById('legend').appendChild(glpPill);
+const glpPill=document.createElement('span');glpPill.className='pill';glpPill.innerHTML='<span class="swatch" style="background:#DDF7EE;border:1px solid #79D6B8"></span>GLP-1 · 10 clicks · Mon evening / Fri morning';document.getElementById('legend').appendChild(glpPill);
 const filters=document.getElementById('filters');
 const allBtn=document.createElement('button');allBtn.type='button';allBtn.dataset.filter='all';allBtn.className='active';allBtn.textContent='Show all';filters.appendChild(allBtn);
 Object.entries(cats).forEach(([k,v])=>{const b=document.createElement('button');b.type='button';b.dataset.filter=k;b.textContent=v.label;filters.appendChild(b)});
@@ -239,7 +239,7 @@ function showMonth(y,m){
     const isGLP1Day=(p.m===m && ds>=glp1Start && (dt.getDay()===1 || dt.getDay()===5));
     const cell=document.createElement('div');cell.className='zday'+(p.m!==m?' other':'')+(isTRTDay?' trt-day':'');
     const num=document.createElement('span');num.className='znum'+(ds===todayIso?' today':'');num.textContent=p.d;cell.appendChild(num);
-    if(isTRTDay){const tag=document.createElement('span');tag.className='ztrt-tag';tag.textContent='TRT';tag.title='TRT injection reminder';cell.appendChild(tag);} if(isGLP1Day){const tag=document.createElement('span');tag.className='zglp-tag';tag.textContent='GLP-1';tag.title='GLP-1 injection reminder · 10 clicks';cell.appendChild(tag);}
+    if(isTRTDay){const tag=document.createElement('span');tag.className='ztrt-tag';tag.textContent='TRT';tag.title=dt.getDay()===1?'TRT injection · Monday evening':'TRT injection · Friday morning';cell.appendChild(tag);} if(isGLP1Day){const tag=document.createElement('span');tag.className='zglp-tag';tag.textContent='GLP-1';tag.title='GLP-1 · 10 clicks · Monday evening / Friday morning';cell.appendChild(tag);}
     events.filter(e=>(activeFilter==='all'||e.cat===activeFilter)&&e.start<=ds&&e.end>=ds).forEach(e=>{const b=document.createElement('button');b.type='button';b.className='zev';b.style.background=cats[e.cat].fill;b.textContent=e.label;b.addEventListener('click',()=>openEventFromMonth(e));cell.appendChild(b)});
     grid.appendChild(cell);
   }
@@ -260,7 +260,7 @@ function renderMonth(container,y,m){
     const isTRTDay=(p.m===m && (dt.getDay()===1 || dt.getDay()===5) && !trtBreakDates.has(ds));
     const isGLP1Day=(p.m===m && ds>=glp1Start && (dt.getDay()===1 || dt.getDay()===5));
     const cell=document.createElement('div');cell.className='day'+(p.m!==m?' other':'')+(isTRTDay?' trt-day':'');const num=document.createElement('span');num.className='num'+(ds===todayIso?' today':'');num.textContent=p.d;cell.appendChild(num);
-    if(isTRTDay){const tag=document.createElement('span');tag.className='trt-tag';tag.textContent='TRT';tag.title='TRT injection reminder';cell.appendChild(tag);} if(isGLP1Day){const tag=document.createElement('span');tag.className='glp-tag';tag.textContent='GLP-1';tag.title='GLP-1 injection reminder · 10 clicks';cell.appendChild(tag);}
+    if(isTRTDay){const tag=document.createElement('span');tag.className='trt-tag';tag.textContent='TRT';tag.title=dt.getDay()===1?'TRT injection · Monday evening':'TRT injection · Friday morning';cell.appendChild(tag);} if(isGLP1Day){const tag=document.createElement('span');tag.className='glp-tag';tag.textContent='GLP-1';tag.title='GLP-1 · 10 clicks · Monday evening / Friday morning';cell.appendChild(tag);}
     events.filter(e=>(activeFilter==='all'||e.cat===activeFilter)&&e.start<=ds&&e.end>=ds).forEach(e=>{const bar=document.createElement('button');bar.type='button';bar.className='ev';bar.style.background=cats[e.cat].fill;bar.textContent=e.label;bar.title=`${e.label} · ${formatRange(e)}`;bar.addEventListener('click',()=>showEvent(e));cell.appendChild(bar)});
     grid.appendChild(cell);
   }
