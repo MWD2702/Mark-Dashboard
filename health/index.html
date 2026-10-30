@@ -339,7 +339,7 @@ dialog{border:0;border-radius:18px;padding:0;width:min(720px,calc(100% - 28px));
   </section>
 
   <section class="section" id="strengthBenchmarks">
-    <div class="section-head"><h2>Strength benchmarks · progressive overload</h2><div class="section-note">Detailed Training Progress log through 22 Oct · DB chest press is flat · DB loads are combined totals</div></div>
+    <div class="section-head"><h2>Strength benchmarks · progressive overload</h2><div class="section-note">Detailed Training Progress log through 30 Oct · DB chest press is flat · DB loads are combined totals</div></div>
     <div class="benchmark-layout">
       <div class="panel">
         <div class="panel-head">
@@ -355,7 +355,8 @@ dialog{border:0;border-radius:18px;padding:0;width:min(720px,calc(100% - 28px));
       <div class="panel">
         <div class="panel-head"><div><h3>How the benchmark is calculated</h3><div class="meta">Comparable-session metrics, not a replacement for technique or RIR</div></div></div>
         <div class="metric-help">
-          <b>Load progression</b> = change in top working load versus the first comparable benchmark.<br>
+          <b>Peak working load</b> = highest weight recorded in a comparable session (personal best). The latest session is shown separately for DB chest press, so a lighter session does not overwrite the personal best.<br>
+          <b>Load progression</b> = latest session's top working load versus the first comparable benchmark for other exercises.<br>
           <b>Rep progression</b> = change in best reps achieved at that session's top load.<br>
           <b>Estimated 1RM</b> = Epley estimate from the best set: load × (1 + reps ÷ 30).<br>
           <b>Volume</b> = Σ(load × reps); unilateral leg work counts both sides when explicitly recorded.<br>
@@ -666,15 +667,28 @@ function renderStrength(){
   const add=(label,val,detail)=>{const d=document.createElement('div');d.className='benchmark-kpi';d.innerHTML=`<span class="bk">${label}</span><span class="bv">${val}</span><span class="bd">${detail}</span>`;kpis.appendChild(d)};
   if(comp.length){
     const loadD=pctDelta(latest.topLoad,first.topLoad),repD=pctDelta(latest.topReps,first.topReps),eD=pctDelta(latest.e1rm,first.e1rm),vD=pctDelta(latest.volume,first.volume),idx=latest.e1rm/first.e1rm*100;
-    add('Load progression',`${fmt(latest.topLoad,0)} kg`,`${loadD>=0?'+':''}${fmt(loadD,1)}% vs first comparable`);
-    add('Rep progression',`${fmt(latest.topReps,0)} reps`,`${repD>=0?'+':''}${fmt(repD,1)}% at session top load`);
-    add('Estimated 1RM',`${fmt(latest.e1rm,1)} kg`,`${eD>=0?'+':''}${fmt(eD,1)}% vs baseline`);
-    add('Session volume',`${fmt(latest.volume,0)} kg`,`${vD>=0?'+':''}${fmt(vD,1)}% vs baseline`);
-    add('Strength index',`${fmt(idx,0)}`,`Baseline = 100`);
+    if(strengthKey==='chest'){
+      const peak=comp.reduce((best,e)=>entryMetrics(e).topLoad>entryMetrics(best).topLoad?e:best,comp[0]);
+      const peakM=entryMetrics(peak);
+      const peakEstimate=comp.reduce((best,e)=>entryMetrics(e).e1rm>entryMetrics(best).e1rm?e:best,comp[0]);
+      const peakEstM=entryMetrics(peakEstimate);
+      const peakD=pctDelta(peakM.topLoad,first.topLoad);
+      add('Personal best · load',`${fmt(peakM.topLoad,0)} kg`,`${fmt(peakM.topLoad/2,0)} kg per hand · ${fmt(peakM.topReps,0)} reps · ${dateLabel(peak.date)} · +${fmt(peakD,1)}% vs baseline`);
+      add('Latest session · load',`${fmt(latest.topLoad,0)} kg`,`${dateLabel(comp[comp.length-1].date)} · ${fmt(latest.topReps,0)} reps · after machine press, unspotted`);
+      add('Peak estimated 1RM',`${fmt(peakEstM.e1rm,1)} kg`,`${dateLabel(peakEstimate.date)} · Epley estimate, not tested max`);
+      add('Latest session volume',`${fmt(latest.volume,0)} kg`,`${vD>=0?'+':''}${fmt(vD,1)}% vs first comparable`);
+      add('Latest strength index',`${fmt(idx,0)}`,`Baseline = 100 · session-specific, not a PB`);
+    }else{
+      add('Load progression',`${fmt(latest.topLoad,0)} kg`,`${loadD>=0?'+':''}${fmt(loadD,1)}% vs first comparable`);
+      add('Rep progression',`${fmt(latest.topReps,0)} reps`,`${repD>=0?'+':''}${fmt(repD,1)}% at session top load`);
+      add('Estimated 1RM',`${fmt(latest.e1rm,1)} kg`,`${eD>=0?'+':''}${fmt(eD,1)}% vs baseline`);
+      add('Session volume',`${fmt(latest.volume,0)} kg`,`${vD>=0?'+':''}${fmt(vD,1)}% vs baseline`);
+      add('Strength index',`${fmt(idx,0)}`,`Baseline = 100`);
+    }
     renderStrengthChart($('#strengthChart'),def,baseline);
   }else{$('#strengthChart').innerHTML='<div class="meta">No comparable benchmark series available yet.</div>'}
   const ctx=$('#strengthContext');clear(ctx);TRAINING_TRAVEL.forEach(t=>{const x=document.createElement('span');x.className='travel-chip '+t.kind;x.innerHTML=`<span class="travel-dot"></span>${dateLabel(t.start)}–${dateLabel(t.end)} · ${t.label}`;ctx.appendChild(x)});
-  $('#strengthNote').textContent=def.focusVariant?`Progression KPIs use ${def.focusVariant}. Other leg variants remain in the history table for context.`:'Travel-limited points remain visible in the history and chart, but are excluded from progression KPIs when equipment capped the session.';
+  $('#strengthNote').textContent=strengthKey==='chest'?'Personal best: 60 kg combined (30 kg per hand) × 8 reps, achieved for four sets on 22 Oct. Latest: 56 kg × 8 on 29 Oct, after machine pre-fatigue and without a spotter; do not treat the lower session load as a decline in maximum strength.':def.focusVariant?`Progression KPIs use ${def.focusVariant}. Other leg variants remain in the history table for context.`:'Travel-limited points remain visible in the history and chart, but are excluded from progression KPIs when equipment capped the session.';
   const tb=$('#strengthTable tbody');clear(tb);const baseByVariant={};def.entries.forEach(e=>{if(!e.incomplete&&!e.limited){const m=entryMetrics(e);if(m.e1rm!=null&&baseByVariant[e.variant]==null)baseByVariant[e.variant]=m.e1rm}});
   def.entries.forEach(e=>{const m=entryMetrics(e),base=baseByVariant[e.variant],idx=(m.e1rm!=null&&base)?m.e1rm/base*100:null;const tr=document.createElement('tr');const contextClass=e.travel?'context-travel':'context-normal';tr.innerHTML=`<td>${dateLabel(e.date)} 2026</td><td><span class="variant-badge">${e.variant}</span></td><td>${weightLabel(e)}</td><td>${repsLabel(e)}</td><td>${setsLabel(e)}</td><td>${m.e1rm==null?'—':fmt(m.e1rm,1)+' kg'}</td><td>${m.volume==null?'—':fmt(m.volume,0)+' kg'}</td><td>${idx==null?'—':fmt(idx,0)}</td><td class="${contextClass}">${e.context||'—'}${e.limited?' · excluded from KPI':''}${e.incomplete?' · incomplete; excluded from calculations':''}</td>`;tb.appendChild(tr)});
   $('#strengthTableTitle').textContent=`${def.label} · benchmark history`;
